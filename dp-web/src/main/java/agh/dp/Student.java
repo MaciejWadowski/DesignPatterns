@@ -1,4 +1,4 @@
-package agh.dp.web;
+package agh.dp;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

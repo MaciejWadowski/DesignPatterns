@@ -1,4 +1,4 @@
-package agh.dp.lib.library.aspect;
+package agh.dp;
 
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -37,13 +37,4 @@ public class Logging {
     public void caughtSetFirstName() {
         System.out.println("CAUGHT");
     }
-
-    @Pointcut("execution(* *(..))")
-    public void catchThemAll() {}
-
-    @Before("catchThemAll()")
-    public void catchingAll() {
-        System.out.println("lelele");
-    }
-
 }
