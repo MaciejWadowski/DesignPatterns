@@ -1,4 +1,6 @@
-package agh.dp;
+package agh.dp.models;
+
+import agh.dp.providers.PermissionsProvider;
 
 import java.util.*;
 
@@ -27,38 +29,46 @@ public class RoleWithPermissions {
         //TODO: save user to database
     }
 
-    private RoleWithPermissions(RoleBuilder roleBuilder){
-        this.roleName = roleBuilder.roleName;
-        this.inheritedRoleName = roleBuilder.inheritedRoleName;
-        this.permissions = roleBuilder.permissions;
-        this.roleId = roleBuilder.roleId;
+    private RoleWithPermissions(RoleWithPermissionsBuilder roleWithPermissionsBuilder){
+        this.roleName = roleWithPermissionsBuilder.roleName;
+        this.inheritedRoleName = roleWithPermissionsBuilder.inheritedRoleName;
+        this.permissions = roleWithPermissionsBuilder.permissions;
+        this.roleId = roleWithPermissionsBuilder.roleId;
     }
 
-    public static class RoleBuilder{
+    public static class RoleWithPermissionsBuilder {
         private String roleName;
         private String inheritedRoleName;
         private List<Permission>  permissions;
         private long roleId;
 
-        public RoleBuilder(String roleName){
+        public RoleWithPermissionsBuilder(String roleName){
             this.permissions = new ArrayList<Permission>();
             this.roleName = roleName;
         }
 
-        public RoleBuilder setInheritedRole(String inheritedRoleName){
+        public RoleWithPermissionsBuilder setInheritedRole(String inheritedRoleName){
             this.inheritedRoleName = inheritedRoleName;
             return this;
         }
 
-        public RoleBuilder addPermission(String tableName, int accessLevel, int recordId){
+        public RoleWithPermissionsBuilder addPermission(String tableName, int accessLevel, int recordId){
             Permission permission = new Permission(tableName, accessLevel, recordId);
             this.permissions.add(permission);
             return this;
         }
 
-        public RoleBuilder addPermissions(String tableName, int accessLevel, long ... ids){
-            for (long id : ids){
+        public RoleWithPermissionsBuilder addPermissions(String tableName, int accessLevel, long ... recordIds){
+            for (long id : recordIds){
                 Permission permission = new Permission(tableName, accessLevel, id);
+                this.permissions.add(permission);
+            }
+            return this;
+        }
+
+        public RoleWithPermissionsBuilder addInsertPermissions(String ... tableNames){
+            for (String tableName : tableNames){
+                Permission permission = new Permission(tableName, PermissionsProvider.INSERT, 0);
                 this.permissions.add(permission);
             }
             return this;

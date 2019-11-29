@@ -1,5 +1,7 @@
 package agh.dp;
 
+import agh.dp.models.RoleWithPermissions;
+import agh.dp.providers.PermissionsProvider;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,15 +40,19 @@ class WebApplicationTests {
 
     @Test
     void buildRoleTest() {
-        RoleWithPermissions roleWithPermissions = new RoleWithPermissions.RoleBuilder("Prezes")
+        RoleWithPermissions roleWithPermissions = new RoleWithPermissions.RoleWithPermissionsBuilder("Prezes")
                 .setInheritedRole("Księgowy")
                 .addPermissions("Zarobki",
                         PermissionsProvider.DELETE + PermissionsProvider.READ,
                         12, 23, 34)
-                .addPermission("InnaTabelka",
+                .addPermissions("InnaTabelka",
                         PermissionsProvider.UPDATE + PermissionsProvider.READ,
                         10)
+                .addInsertPermissions("Zarobki", "InnaTabelka")
                 .build();
+
         System.out.println("Role builded:" + roleWithPermissions.getRoleName());
+
+        roleWithPermissions.assignUserToRole("KowalskiJan");
     }
 }

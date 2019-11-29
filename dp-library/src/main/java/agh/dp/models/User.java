@@ -1,4 +1,4 @@
-package agh.dp;
+package agh.dp.models;
 
 public class User {
     private String userName;
