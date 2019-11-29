@@ -35,4 +35,18 @@ class WebApplicationTests {
         when(studentRepository.findById(any())).thenReturn(studentOpt);
     //    verify(studentRepository).findById(anyLong());
     }
+
+    @Test
+    void buildRoleTest() {
+        RoleWithPermissions roleWithPermissions = new RoleWithPermissions.RoleBuilder("Prezes")
+                .setInheritedRole("Księgowy")
+                .addPermissions("Zarobki",
+                        PermissionsProvider.DELETE + PermissionsProvider.READ,
+                        12, 23, 34)
+                .addPermission("InnaTabelka",
+                        PermissionsProvider.UPDATE + PermissionsProvider.READ,
+                        10)
+                .build();
+        System.out.println("Role builded:" + roleWithPermissions.getRoleName());
+    }
 }
