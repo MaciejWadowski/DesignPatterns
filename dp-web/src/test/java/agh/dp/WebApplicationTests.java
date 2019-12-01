@@ -1,12 +1,19 @@
 package agh.dp;
 
+import agh.dp.database.PermissionRepository;
+import agh.dp.database.RoleRepository;
+import agh.dp.facade.RoleWithPermissionsFacade;
+import agh.dp.models.Role;
 import agh.dp.models.RoleWithPermissions;
 import agh.dp.providers.PermissionsProvider;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -18,6 +25,10 @@ class WebApplicationTests {
 
     @Mock
     StudentRepository studentRepository;
+    @Mock
+    RoleRepository roleRepository;
+    @Mock
+    PermissionRepository permissionRepository;
 
     @Test
     void contextLoads() {
@@ -38,21 +49,4 @@ class WebApplicationTests {
     //    verify(studentRepository).findById(anyLong());
     }
 
-    @Test
-    void buildRoleTest() {
-        RoleWithPermissions roleWithPermissions = new RoleWithPermissions.RoleWithPermissionsBuilder("Prezes")
-                .setInheritedRole("Księgowy")
-                .addPermissions("Zarobki",
-                        PermissionsProvider.DELETE + PermissionsProvider.READ,
-                        12, 23, 34)
-                .addPermissions("InnaTabelka",
-                        PermissionsProvider.UPDATE + PermissionsProvider.READ,
-                        10)
-                .addInsertPermissions("Zarobki", "InnaTabelka")
-                .build();
-
-        System.out.println("Role builded:" + roleWithPermissions.getRoleName());
-
-        roleWithPermissions.assignUserToRole("KowalskiJan");
-    }
 }
