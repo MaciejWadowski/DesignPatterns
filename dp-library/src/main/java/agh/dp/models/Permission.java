@@ -8,27 +8,32 @@ import javax.persistence.Id;
 @Entity
 public class Permission {
     private String tableName;
-    private int accessLevel;
-    private long recordId;
-    private long roleId;
+    private Integer accessLevel;
+    private Long recordId;
+    private Long roleId;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     public Permission() {}
 
-    public Permission(String tableName, int accessLevel, long recordId){
-        this.accessLevel = accessLevel;
-        this.recordId = recordId;
-        this.tableName = tableName;
-    }
-
-    public Permission(String tableName, int accessLevel, long recordId, long roleId, long id){
+    public Permission(String tableName, Integer accessLevel, Long recordId, Long roleId) {
         this.tableName = tableName;
         this.accessLevel = accessLevel;
         this.recordId = recordId;
         this.roleId = roleId;
+    }
+
+    public Permission(String tableName, Integer accessLevel) {
+        this.tableName = tableName;
+        this.accessLevel = accessLevel;
+    }
+
+    public Permission(String tableName, Integer accessLevel, Long recordId) {
+        this.tableName = tableName;
+        this.accessLevel = accessLevel;
+        this.recordId = recordId;
     }
 
     public String getTableName() {
@@ -39,47 +44,59 @@ public class Permission {
         this.tableName = tableName;
     }
 
-    public int getAccessLevel() {
+    public Integer getAccessLevel() {
         return accessLevel;
     }
 
-    public void setAccessLevel(int accessLevel) {
+    public void setAccessLevel(Integer accessLevel) {
         this.accessLevel = accessLevel;
     }
 
-    public long getRecordId() {
+    public Long getRecordId() {
         return recordId;
     }
 
-    public void setRecordId(long recordId) {
+    public void setRecordId(Long recordId) {
         this.recordId = recordId;
     }
 
-    public long getRoleId() {
+    public Long getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(long roleId) {
+    public void setRoleId(Long roleId) {
         this.roleId = roleId;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
     @Override
-    public String toString() {
-        return "Permission{" +
-                "tableName='" + tableName + '\'' +
-                ", accessLevel=" + accessLevel +
-                ", recordId=" + recordId +
-                ", roleId=" + roleId +
-                ", id=" + id +
-                '}';
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Permission that = (Permission) o;
+
+        if (tableName != null ? !tableName.equals(that.tableName) : that.tableName != null) return false;
+        if (accessLevel != null ? !accessLevel.equals(that.accessLevel) : that.accessLevel != null) return false;
+        if (recordId != null ? !recordId.equals(that.recordId) : that.recordId != null) return false;
+        if (roleId != null ? !roleId.equals(that.roleId) : that.roleId != null) return false;
+        return id != null ? id.equals(that.id) : that.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = tableName != null ? tableName.hashCode() : 0;
+        result = 31 * result + (accessLevel != null ? accessLevel.hashCode() : 0);
+        result = 31 * result + (recordId != null ? recordId.hashCode() : 0);
+        result = 31 * result + (roleId != null ? roleId.hashCode() : 0);
+        result = 31 * result + (id != null ? id.hashCode() : 0);
+        return result;
     }
 }
-

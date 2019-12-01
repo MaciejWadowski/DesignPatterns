@@ -22,7 +22,7 @@ public class Logging {
         System.out.println("Caught save method");
     }
 
-    @Pointcut("execution(* *.findById(Long))")
+    @Pointcut("execution(* *.findById(..))")
     public void catchFindById() {}
 
     @Before("catchFindById()")

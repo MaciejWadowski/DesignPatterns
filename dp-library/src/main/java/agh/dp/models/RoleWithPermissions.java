@@ -8,7 +8,7 @@ public class RoleWithPermissions {
     private String roleName;
     private String inheritedRoleName;
     private List<Permission> permissions;
-    private long roleId;
+    private Long roleId;
 
     public RoleWithPermissions() {}
 
@@ -42,7 +42,7 @@ public class RoleWithPermissions {
         private String roleName;
         private String inheritedRoleName;
         private List<Permission>  permissions;
-        private long roleId;
+        private Long roleId;
 
         public RoleWithPermissionsBuilder(String roleName){
             this.permissions = new ArrayList<Permission>();
@@ -54,14 +54,14 @@ public class RoleWithPermissions {
             return this;
         }
 
-        public RoleWithPermissionsBuilder addPermission(String tableName, int accessLevel, int recordId){
-            Permission permission = new Permission(tableName, accessLevel, recordId);
+        public RoleWithPermissionsBuilder addPermission(String tableName, Integer accessLevel, Integer recordId){
+            Permission permission = new Permission(tableName, accessLevel, Long.valueOf(recordId));
             this.permissions.add(permission);
             return this;
         }
 
-        public RoleWithPermissionsBuilder addPermissions(String tableName, int accessLevel, long ... recordIds){
-            for (long id : recordIds){
+        public RoleWithPermissionsBuilder addPermissions(String tableName, Integer accessLevel, Long ... recordIds){
+            for (Long id : recordIds){
                 Permission permission = new Permission(tableName, accessLevel, id);
                 this.permissions.add(permission);
             }
@@ -70,7 +70,7 @@ public class RoleWithPermissions {
 
         public RoleWithPermissionsBuilder addInsertPermissions(String ... tableNames){
             for (String tableName : tableNames){
-                Permission permission = new Permission(tableName, PermissionsProvider.INSERT, 0);
+                Permission permission = new Permission(tableName, PermissionsProvider.INSERT, 0L);
                 this.permissions.add(permission);
             }
             return this;
@@ -84,7 +84,7 @@ public class RoleWithPermissions {
             // assign id to this.roleId,
             // assign to each permission
             for (Permission permission : permissions){
-                permission.setRoleId(1);
+                permission.setRoleId(1L);
                 //TODO: save each permission to database
             }
             return new RoleWithPermissions(this);
@@ -107,11 +107,11 @@ public class RoleWithPermissions {
         this.permissions = permissions;
     }
 
-    public long getRoleId() {
+    public Long getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(long roleId) {
+    public void setRoleId(Long roleId) {
         this.roleId = roleId;
     }
 }

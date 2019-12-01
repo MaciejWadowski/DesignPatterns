@@ -1,5 +1,6 @@
 package agh.dp.database;
 
+import agh.dp.Logging;
 import agh.dp.models.Role;
 import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +17,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 //something doesn't work, please insert class names which you use
-@SpringBootTest(classes = {RoleRepository.class})
+@SpringBootTest(classes = {RoleRepository.class, Logging.class})
 class RoleRepositoryTest {
 
     @Mock

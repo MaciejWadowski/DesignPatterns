@@ -45,5 +45,6 @@ public class DataLoader implements CommandLineRunner {
         permission.setTableName("some table");
         Permission permission1 = permissionRepository.save(permission);
         System.out.println(permission1);
+        Optional<Permission> permission2 = permissionRepository.findById(permission1.getId());
     }
 }
