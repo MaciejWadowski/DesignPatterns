@@ -1,9 +1,9 @@
-package agh.dp.lib.library;
+package agh.dp;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+@SpringBootTest(classes ={Logging.class})
 class LibraryApplicationTests {
 
     @Test

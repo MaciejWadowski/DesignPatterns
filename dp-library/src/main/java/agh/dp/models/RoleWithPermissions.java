@@ -10,7 +10,9 @@ public class RoleWithPermissions {
     private List<Permission> permissions;
     private long roleId;
 
-    RoleWithPermissions(String roleName, String inheritedRoleName, List<Permission> permissions){
+    public RoleWithPermissions() {}
+
+    public RoleWithPermissions(String roleName, String inheritedRoleName, List<Permission> permissions){
         this.roleName = roleName;
         this.inheritedRoleName = inheritedRoleName;
         this.permissions = permissions;
@@ -87,5 +89,29 @@ public class RoleWithPermissions {
             }
             return new RoleWithPermissions(this);
         }
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
+
+    public void setInheritedRoleName(String inheritedRoleName) {
+        this.inheritedRoleName = inheritedRoleName;
+    }
+
+    public List<Permission> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(List<Permission> permissions) {
+        this.permissions = permissions;
+    }
+
+    public long getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(long roleId) {
+        this.roleId = roleId;
     }
 }
