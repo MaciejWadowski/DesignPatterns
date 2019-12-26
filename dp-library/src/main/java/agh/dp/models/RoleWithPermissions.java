@@ -54,8 +54,8 @@ public class RoleWithPermissions {
             return this;
         }
 
-        public RoleWithPermissionsBuilder addPermission(String tableName, Integer accessLevel, Integer recordId){
-            Permission permission = new Permission(tableName, accessLevel, Long.valueOf(recordId));
+        public RoleWithPermissionsBuilder addPermission(String tableName, Integer accessLevel, Long recordId){
+            Permission permission = new Permission(tableName, accessLevel, recordId);
             this.permissions.add(permission);
             return this;
         }

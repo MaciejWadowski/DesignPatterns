@@ -44,10 +44,10 @@ class WebApplicationTests {
                 .setInheritedRole("Księgowy")
                 .addPermissions("Zarobki",
                         PermissionsProvider.DELETE + PermissionsProvider.READ,
-                        12, 23, 34)
+                        12L, 23L, 34L)
                 .addPermissions("InnaTabelka",
                         PermissionsProvider.UPDATE + PermissionsProvider.READ,
-                        10)
+                        10L)
                 .addInsertPermissions("Zarobki", "InnaTabelka")
                 .build();
 
