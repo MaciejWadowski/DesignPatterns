@@ -1,7 +1,11 @@
 package agh.dp.database;
 
 import agh.dp.Logging;
+import agh.dp.facade.RoleWithPermissionsFacade;
+import agh.dp.models.Permission;
 import agh.dp.models.Role;
+import agh.dp.models.RoleWithPermissions;
+import agh.dp.providers.PermissionsProvider;
 import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +26,8 @@ class RoleRepositoryTest {
 
     @Mock
     RoleRepository roleRepository;
+    @Mock
+    PermissionRepository permissionRepository;
 
     Role role;
 
@@ -84,5 +90,33 @@ class RoleRepositoryTest {
         //then
         assertEquals(rolesInRepo, roles);
         verify(roleRepository).saveAll(anySet());
+    }
+
+    @Test
+    public void shouldSaveRoleAndPermissions() {
+        RoleWithPermissions roleWithPermissions = new RoleWithPermissions
+                .RoleWithPermissionsBuilder("NazwaRoli")
+                .setInheritedRole("OdziedziczonaRola")
+                .addInsertPermissions("nazwaTabeli1", "nazwaTabeli2")
+                .addPermissions("nazwaTabeli1",
+                        PermissionsProvider.DELETE + PermissionsProvider.READ,
+                        1, 13, 32)
+                .addPermissions("nazwaTabeli2",
+                        PermissionsProvider.UPDATE + PermissionsProvider.READ,
+                        134, 23, 65, 23, 4)
+                .build();
+
+        roleWithPermissions.getRole().setId(1L);
+        long idCounter = 0L;
+        for (Permission permission : roleWithPermissions.getPermissions()){
+            permission.setId(1L + idCounter);
+            idCounter += 1L;
+        }
+
+        RoleWithPermissionsFacade facade = RoleWithPermissionsFacade.INSTANCE;
+        facade.setRoleRepository(roleRepository);
+        facade.setPermissionRepository(permissionRepository);
+        facade.saveRoleWithPermissions(roleWithPermissions);
+
     }
 }
