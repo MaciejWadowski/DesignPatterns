@@ -1,5 +1,6 @@
 package agh.dp;
 
+import agh.dp.facade.RoleWithPermissionsFacade;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -8,6 +9,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+
+import javax.servlet.*;
+import javax.servlet.http.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.Principal;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.Locale;
+import java.util.Map;
 
 @Configuration
 @Aspect
@@ -35,6 +47,7 @@ public class Logging {
             System.out.println(2);
         }
         System.out.println("Caught save method");
+        int roleId = 1;
     }
 
     @Pointcut("execution(* *.findById(..))")

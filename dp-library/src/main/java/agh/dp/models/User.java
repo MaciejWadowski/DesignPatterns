@@ -1,9 +1,18 @@
 package agh.dp.models;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
 public class User {
     private String userName;
-    private long roleId;
-    private long id;
+    private Long roleId;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long Id;
 
     public User() {}
 
@@ -20,19 +29,19 @@ public class User {
         this.userName = userName;
     }
 
-    public long getRoleId() {
+    public Long getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(long roleId) {
+    public void setRoleId(Long roleId) {
         this.roleId = roleId;
     }
 
-    public long getId() {
-        return id;
+    public Long getId() {
+        return Id;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setId(Long id) {
+        this.Id = id;
     }
 }

@@ -10,11 +10,11 @@ public class RoleWithPermissions {
 
     public RoleWithPermissions() {}
 
-    public RoleWithPermissions(String roleName, String inheritedRoleName, List<Permission> permissions){
+    public RoleWithPermissions(String roleName, Long inheritedRoleName, List<Permission> permissions){
         this.role = new Role();
         this.permissions = new ArrayList<>();
         this.role.setRoleName(roleName);
-        this.role.setInheritedRoleName(inheritedRoleName);
+        this.role.setInheritedRoleId(inheritedRoleName);
         this.permissions = permissions;
     }
 
@@ -22,8 +22,8 @@ public class RoleWithPermissions {
         return role.getRoleName();
     }
 
-    public String getInheritedRoleName() {
-        return role.getInheritedRoleName();
+    public Long getInheritedRoleName() {
+        return role.getInheritedRoleId();
     }
 
     public void assignUserToRole(String userName){
@@ -43,7 +43,7 @@ public class RoleWithPermissions {
         this.role = new Role();
         this.permissions = new ArrayList<>();
         this.role.setRoleName(roleWithPermissionsBuilder.role.getRoleName());
-        this.role.setInheritedRoleName(roleWithPermissionsBuilder.role.getInheritedRoleName());
+        this.role.setInheritedRoleId(roleWithPermissionsBuilder.role.getInheritedRoleId());
         this.permissions = roleWithPermissionsBuilder.permissions;
     }
 
@@ -57,8 +57,8 @@ public class RoleWithPermissions {
             this.role.setRoleName(roleName);
         }
 
-        public RoleWithPermissionsBuilder setInheritedRole(String inheritedRoleName){
-            this.role.setInheritedRoleName(inheritedRoleName);
+        public RoleWithPermissionsBuilder setInheritedRole(Long inheritedRoleName){
+            this.role.setInheritedRoleId(inheritedRoleName);
             return this;
         }
 
