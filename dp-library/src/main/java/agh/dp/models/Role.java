@@ -12,13 +12,13 @@ public class Role {
     @Id
     private Long id;
     private String roleName;
-    private String inheritedRoleName;
+    private Long inheritedRoleId;
 
     public Role() {}
 
-    public Role(String roleName, String inheritedRoleName) {
+    public Role(String roleName, Long inheritedRoleId) {
         this.roleName = roleName;
-        this.inheritedRoleName = inheritedRoleName;
+        this.inheritedRoleId = inheritedRoleId;
     }
 
     @Override
@@ -30,14 +30,14 @@ public class Role {
 
         if (id != null ? !id.equals(role.id) : role.id != null) return false;
         if (roleName != null ? !roleName.equals(role.roleName) : role.roleName != null) return false;
-        return inheritedRoleName != null ? inheritedRoleName.equals(role.inheritedRoleName) : role.inheritedRoleName == null;
+        return inheritedRoleId != null ? inheritedRoleId.equals(role.inheritedRoleId) : role.inheritedRoleId == null;
     }
 
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (roleName != null ? roleName.hashCode() : 0);
-        result = 31 * result + (inheritedRoleName != null ? inheritedRoleName.hashCode() : 0);
+        result = 31 * result + (inheritedRoleId != null ? inheritedRoleId.hashCode() : 0);
         return result;
     }
 
@@ -57,11 +57,11 @@ public class Role {
         this.roleName = roleName;
     }
 
-    public String getInheritedRoleName() {
-        return inheritedRoleName;
+    public Long getInheritedRoleId() {
+        return inheritedRoleId;
     }
 
-    public void setInheritedRoleName(String inheritedRoleName) {
-        this.inheritedRoleName = inheritedRoleName;
+    public void setInheritedRoleId(Long inheritedRoleName) {
+        this.inheritedRoleId = inheritedRoleName;
     }
 }

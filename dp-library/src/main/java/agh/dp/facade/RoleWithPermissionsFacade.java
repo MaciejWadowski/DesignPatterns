@@ -2,14 +2,17 @@ package agh.dp.facade;
 
 import agh.dp.database.PermissionRepository;
 import agh.dp.database.RoleRepository;
+import agh.dp.database.UserRepository;
 import agh.dp.models.Permission;
 import agh.dp.models.Role;
 import agh.dp.models.RoleWithPermissions;
+import agh.dp.models.User;
 
 public class RoleWithPermissionsFacade {
 
     public static final RoleWithPermissionsFacade INSTANCE = new RoleWithPermissionsFacade();
 
+    UserRepository userRepository;
     PermissionRepository permissionRepository;
     RoleRepository roleRepository;
 
@@ -21,6 +24,22 @@ public class RoleWithPermissionsFacade {
 
     public void setRoleRepository(RoleRepository roleRepository){
         this.roleRepository = roleRepository;
+    }
+
+    public void setUserRepository(UserRepository userRepository){
+        this.userRepository = userRepository;
+    }
+
+    public PermissionRepository getPermissionRepository(){
+        return  this.permissionRepository;
+    }
+
+    public RoleRepository getRoleRepository() {
+        return roleRepository;
+    }
+
+    public UserRepository getUserRepository() {
+        return userRepository;
     }
 
     public void saveRoleWithPermissions(RoleWithPermissions roleWithPermissions){

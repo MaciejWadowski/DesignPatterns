@@ -33,7 +33,7 @@ class RoleRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        role = new Role("Ksiegowy", "");
+        role = new Role("Ksiegowy", 2L);
         role.setId(1L);
     }
 
@@ -66,9 +66,9 @@ class RoleRepositoryTest {
     public void shouldRetrieveAllRoles() {
         //given
         Set<Role> roles = new HashSet<>();
-        roles.add(new Role("Ksiegowy", ""));
-        roles.add(new Role("Prezes", "Ksiegowy"));
-        roles.add(new Role("Maciek", "Ksiegowy"));
+        roles.add(new Role("Ksiegowy", 2L));
+        roles.add(new Role("Prezes", 3L));
+        roles.add(new Role("Maciek", 3L));
         //when
         when(roleRepository.findAll()).thenReturn(roles);
         Set<Role> rolesInRepo = new HashSet<>((Collection)roleRepository.findAll());
@@ -81,9 +81,9 @@ class RoleRepositoryTest {
     public void shouldSaveAllValues() {
         //given
         Set<Role> roles = new HashSet<>();
-        roles.add(new Role("Ksiegowy", ""));
-        roles.add(new Role("Prezes", "Ksiegowy"));
-        roles.add(new Role("Maciek", "Ksiegowy"));
+        roles.add(new Role("Ksiegowy", 2L));
+        roles.add(new Role("Prezes", 3L));
+        roles.add(new Role("Maciek", 3L));
         //when
         when(roleRepository.saveAll(anySet())).thenReturn(roles);
         Set<Role> rolesInRepo = new HashSet<>((Collection) roleRepository.saveAll(roles));
@@ -96,7 +96,7 @@ class RoleRepositoryTest {
     public void shouldSaveRoleAndPermissions() {
         RoleWithPermissions roleWithPermissions = new RoleWithPermissions
                 .RoleWithPermissionsBuilder("NazwaRoli")
-                .setInheritedRole("OdziedziczonaRola")
+                .setInheritedRole(1L)
                 .addInsertPermissions("nazwaTabeli1", "nazwaTabeli2")
                 .addPermissions("nazwaTabeli1",
                         PermissionsProvider.DELETE + PermissionsProvider.READ,

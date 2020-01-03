@@ -52,7 +52,7 @@ class WebApplicationTests {
     @Test
     void buildRoleTest() {
         RoleWithPermissions roleWithPermissions = new RoleWithPermissions.RoleWithPermissionsBuilder("Prezes")
-                .setInheritedRole("Księgowy")
+                .setInheritedRole(2L)
                 .addPermissions("Zarobki",
                         PermissionsProvider.DELETE + PermissionsProvider.READ,
                         12, 23, 34)
