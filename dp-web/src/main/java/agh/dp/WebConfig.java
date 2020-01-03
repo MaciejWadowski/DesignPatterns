@@ -10,6 +10,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
+import java.util.List;
+
 @Configuration
 @EnableWebSecurity
 public class WebConfig extends WebSecurityConfigurerAdapter {
@@ -37,7 +39,15 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
                         .password("password")
                         .roles("USER")
                         .build();
+        //to create new user just copy and paste
+        //code below with different username
+        UserDetails user2 =
+                User.withDefaultPasswordEncoder()
+                        .username("user2")
+                        .password("password")
+                        .roles("USER")
+                        .build();
 
-        return new InMemoryUserDetailsManager(user);
+        return new InMemoryUserDetailsManager(user,user2);
     }
 }
