@@ -25,26 +25,26 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        Student student = new Student();
-        student.setFirstName("Maciek");
-        student.setLastName("XDDD");
-        studentRepository.save(student);
-        Optional<Student> stud = studentRepository.findById(1L);
-        System.out.println(stud.toString());
-
-        // zawsze jak obiekt z repo zawiera sie w innym, to wpierw zapisujemy jego komponent do bazy!!!
-        // bo moze sie przewrocic
-        Role role = new Role();
-        role.setInheritedRoleName("");
-        role.setRoleName("GameMaster");
-        Role savedRole = roleRepository.save(role);
-
-        Permission permission = new Permission();
-        permission.setRoleId(savedRole.getId());
-        permission.setAccessLevel(PermissionsProvider.INSERT);
-        permission.setTableName("some table");
-        Permission permission1 = permissionRepository.save(permission);
-        System.out.println(permission1);
-        Optional<Permission> permission2 = permissionRepository.findById(permission1.getId());
+//        Student student = new Student();
+//        student.setFirstName("Maciek");
+//        student.setLastName("XDDD");
+//        studentRepository.save(student);
+//        Optional<Student> stud = studentRepository.findById(1L);
+//        System.out.println(stud.toString());
+//
+//        // zawsze jak obiekt z repo zawiera sie w innym, to wpierw zapisujemy jego komponent do bazy!!!
+//        // bo moze sie przewrocic
+//        Role role = new Role();
+//        role.setInheritedRoleName("");
+//        role.setRoleName("GameMaster");
+//        Role savedRole = roleRepository.save(role);
+//
+//        Permission permission = new Permission();
+//        permission.setRoleId(savedRole.getId());
+//        permission.setAccessLevel(PermissionsProvider.INSERT);
+//        permission.setTableName("some table");
+//        Permission permission1 = permissionRepository.save(permission);
+//        System.out.println(permission1);
+//        Optional<Permission> permission2 = permissionRepository.findById(permission1.getId());
     }
 }
