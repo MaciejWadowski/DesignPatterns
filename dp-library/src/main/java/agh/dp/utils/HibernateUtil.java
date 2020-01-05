@@ -23,10 +23,10 @@ public class HibernateUtil {
                         = new StandardServiceRegistryBuilder();
 
                 Map<String, Object> settings = new HashMap<>();
-                settings.put(Environment.DRIVER, "com.mysql.cj.jdbc.Driver");
-                settings.put(Environment.URL, "jdbc:mysql://localhost:8080");
-                settings.put(Environment.USER, "user");
-                settings.put(Environment.PASS, "password");
+                settings.put(Environment.DRIVER, "org.h2.Driver");
+                settings.put(Environment.URL, "jdbc:h2:mem:testdb");
+                settings.put(Environment.USER, "sa");
+                settings.put(Environment.PASS, "");
                 settings.put(Environment.HBM2DDL_AUTO, "update");
 
                 registryBuilder.applySettings(settings);

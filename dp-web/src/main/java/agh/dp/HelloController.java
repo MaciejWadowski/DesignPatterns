@@ -19,11 +19,14 @@ public class HelloController {
 
     @RequestMapping(value = {"hello", "/hello", "hello.html"})
     public String bugHandler() {
-        repository.save(new User());
         Session session = HibernateUtil.getSessionFactory()
                 .withOptions()
                 .interceptor(new Logging())
                 .openSession();
+
+        session.save(new User("username", 2L));
+        System.out.println("boop");
+        session.get(User.class, 1L);
         return "hello";
     }
 }
