@@ -7,6 +7,7 @@ import javax.persistence.Id;
 
 @Entity
 public class Permission {
+
     private String tableName;
     private Integer accessLevel;
     private Long recordId;

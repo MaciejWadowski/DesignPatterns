@@ -19,7 +19,7 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/", "/home").permitAll()
+                .antMatchers("/", "/home", "/h2_console/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -28,6 +28,8 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout()
                 .permitAll();
+        http.csrf().disable();
+        http.headers().frameOptions().disable();
     }
 
     @Bean

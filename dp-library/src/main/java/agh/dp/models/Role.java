@@ -1,9 +1,6 @@
 package agh.dp.models;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Role {
@@ -11,7 +8,9 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     private Long id;
+    @Column(name ="ROLENAME")
     private String roleName;
+    @Column(name= "INHERITEDROLEID")
     private Long inheritedRoleId;
 
     public Role() {}

@@ -16,24 +16,27 @@ public class HibernateUtil {
     private static StandardServiceRegistry registry;
     private static SessionFactory sessionFactory;
 
-    public static SessionFactory getSessionFactory() {
+    public static SessionFactory getSessionFactory(String driver, String url, String user, String password, Class ... classes) {
         if (sessionFactory == null) {
             try {
                 StandardServiceRegistryBuilder registryBuilder
                         = new StandardServiceRegistryBuilder();
 
                 Map<String, Object> settings = new HashMap<>();
-                settings.put(Environment.DRIVER, "org.h2.Driver");
-                settings.put(Environment.URL, "jdbc:h2:mem:testdb");
-                settings.put(Environment.USER, "sa");
-                settings.put(Environment.PASS, "");
+                settings.put(Environment.DRIVER, driver);
+                settings.put(Environment.URL, url);
+                settings.put(Environment.USER, user);
+                settings.put(Environment.PASS, password);
                 settings.put(Environment.HBM2DDL_AUTO, "update");
 
                 registryBuilder.applySettings(settings);
                 registry = registryBuilder.build();
 
-                MetadataSources sources = new MetadataSources(registry)
-                        .addAnnotatedClass(User.class);
+                MetadataSources sources = new MetadataSources(registry);
+
+                for (Class clazz: classes) {
+                    sources.addAnnotatedClass(clazz);
+                }
 
                 Object obj = sources.getMetadataBuilder();
                 Metadata metadata = sources.getMetadataBuilder().build();
