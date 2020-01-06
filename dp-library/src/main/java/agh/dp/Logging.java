@@ -43,6 +43,17 @@ public class Logging extends EmptyInterceptor {
     @Override
     public String onPrepareStatement(String sql) {
         System.out.println(sql);
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+
+            String username = ((UserDetails)principal).getUsername();
+            System.out.println(username);
+        } else {
+
+            String username = principal.toString();
+            System.out.println(username);
+        }
         return super.onPrepareStatement(sql);
     }
 
