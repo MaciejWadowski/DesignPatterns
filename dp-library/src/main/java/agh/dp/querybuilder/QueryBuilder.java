@@ -16,10 +16,7 @@ public class QueryBuilder {
         Matcher joinMatcher = joinPattern.matcher(builder);
         Matcher whereMatcher = endingOfTableNames.matcher(builder);
 
-        int start, end, asStart, joinEnd;
-        String name = "";
-        String asName = "";
-        String[] names2;
+        int start, joinEnd;
 
         matcher1.find();
         start = matcher1.end()+1;
@@ -50,13 +47,10 @@ public class QueryBuilder {
         name = builder.substring(start,end);
         name = name.trim();
         names2 = name.split(" ");
-        if (names2.length==2){
-            names.add(names2);
-        }
-        else{
+        if (names2.length != 2) {
             names.set(2, names.get(1));
-            names.add(names2);
         }
+        names.add(names2);
     }
 
     public String buildQuery(String startingQuery, Map<String,List<Long>> permissions){
@@ -84,12 +78,11 @@ public class QueryBuilder {
 
         if (!whereMatcher.find()){
             builder.append(" WHERE ");
-            makeConstraints(permissions, builder, tableNames);
         }
         else {
             builder.append(" AND ");
-            makeConstraints(permissions, builder, tableNames);
         }
+        makeConstraints(permissions, builder, tableNames);
 
         if (flag){
             builder.append(order);
@@ -100,19 +93,20 @@ public class QueryBuilder {
 
     private void makeConstraints(Map<String, List<Long>> permissions, StringBuilder builder, List<String[]> tableNames) {
         List<Long> perms;
-        for (int i = 0; i<tableNames.size(); i++) {
-            perms = permissions.getOrDefault(tableNames.get(i)[0], null);
-            if (perms == null){
+        for (String[] tableName : tableNames) {
+            perms = permissions.getOrDefault(tableName[0], null);
+            if (perms == null) {
                 continue;
             }
-            builder.append(tableNames.get(i)[1]+".ID IN (");
-            for(long number: perms){
-                builder.append(number+", ");
+            builder.append(tableName[1]).append(".ID IN (");
+            for (long number : perms) {
+                builder.append(number).append(", ");
             }
-            builder.deleteCharAt(builder.length()-1);
-            builder.deleteCharAt(builder.length()-1);
-            builder.append(") ");
+            builder.deleteCharAt(builder.length() - 1);
+            builder.deleteCharAt(builder.length() - 1);
+            builder.append(") AND ");
         }
+        builder.delete(builder.length()-4, builder.length());
     }
 
     public static void main(String[] args) {
