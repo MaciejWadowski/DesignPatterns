@@ -6,38 +6,57 @@ import java.util.regex.Pattern;
 
 public class QueryBuilder {
 
-    public List<String> getTableNames(String startingQuery){
-        List<String> names = new ArrayList<String>();
+    public List<String[]> getTableNames(String startingQuery){
+        List<String[]> names = new ArrayList<>();
         StringBuilder builder = new StringBuilder(startingQuery);
         Pattern fromPattern = Pattern.compile("from", Pattern.CASE_INSENSITIVE);
-        Pattern joinPattern = Pattern.compile("join", Pattern.CASE_INSENSITIVE);
-        Pattern endingOfTableName = Pattern.compile(" ");
+        Pattern joinPattern = Pattern.compile("(left|right|outer)* ?join", Pattern.CASE_INSENSITIVE);
+        Pattern endingOfTableNames = Pattern.compile("(where|order by)");
         Matcher matcher1 = fromPattern.matcher(builder);
-        int start, end;
+        Matcher joinMatcher = joinPattern.matcher(builder);
+        Matcher whereMatcher = endingOfTableNames.matcher(builder);
+
+        int start, end, asStart, joinEnd;
+        String name = "";
+        String asName = "";
+        String[] names2;
 
         matcher1.find();
-        start = matcher1.start()+5;
+        start = matcher1.end()+1;
 
-        matcher1 = endingOfTableName.matcher(builder);
-        matcher1.find(start);
-        end = matcher1.start();
-        names.add(builder.substring(start,end));
+        joinEnd = start;
+
         while (true){
-            matcher1 = joinPattern.matcher(builder);
-            if (matcher1.find()) {
-                start = matcher1.start()+5;
-                matcher1 = endingOfTableName.matcher(builder);
-                matcher1.find(start);
-                end = matcher1.start();
-                names.add(builder.substring(start, end));
-                builder.delete(0,end);
-
+            if (joinMatcher.find(joinEnd)) {
+                start = joinEnd;
+                findNewName(names, builder, joinMatcher, start);
+                joinEnd = joinMatcher.end()+1;
             }
             else {
+                start = joinEnd;
+                whereMatcher.find(joinEnd);
+                findNewName(names, builder, whereMatcher, start);
                 break;
             }
         }
         return names;
+    }
+
+    private void findNewName(List<String[]> names, StringBuilder builder, Matcher joinMatcher, int start) {
+        int end;
+        String name;
+        String[] names2;
+        end = joinMatcher.start();
+        name = builder.substring(start,end);
+        name = name.trim();
+        names2 = name.split(" ");
+        if (names2.length==2){
+            names.add(names2);
+        }
+        else{
+            names.set(2, names.get(1));
+            names.add(names2);
+        }
     }
 
     public String buildQuery(String startingQuery, Map<String,List<Long>> permissions){
@@ -45,7 +64,7 @@ public class QueryBuilder {
         // delete ":" from query
         builder.deleteCharAt(builder.length()-1);
 
-        List<String> tableNames = getTableNames(startingQuery);
+        List<String[]> tableNames = getTableNames(startingQuery);
 
         Pattern orderByPattern = Pattern.compile("order by", Pattern.CASE_INSENSITIVE);
         Matcher orderByMatcher = orderByPattern.matcher(builder);
@@ -79,14 +98,14 @@ public class QueryBuilder {
         return builder.toString();
     }
 
-    private void makeConstraints(Map<String, List<Long>> permissions, StringBuilder builder, List<String> tableNames) {
+    private void makeConstraints(Map<String, List<Long>> permissions, StringBuilder builder, List<String[]> tableNames) {
         List<Long> perms;
         for (int i = 0; i<tableNames.size(); i++) {
-            perms = permissions.getOrDefault(tableNames.get(i), null);
+            perms = permissions.getOrDefault(tableNames.get(i)[0], null);
             if (perms == null){
                 continue;
             }
-            builder.append(tableNames.get(i)+".ID IN (");
+            builder.append(tableNames.get(i)[1]+".ID IN (");
             for(long number: perms){
                 builder.append(number+", ");
             }
@@ -97,7 +116,7 @@ public class QueryBuilder {
     }
 
     public static void main(String[] args) {
-        String s = "SELECT * FROM tab1 join tab2 join tab3 where JAJA order by jaja;";
+        String s = "SELECT * FROM tab1 tabelka join tab2 babelka  join tab3 bombelek where JAJA order by jaja;";
         QueryBuilder queryBuilder = new QueryBuilder();
         List<Long> l = Arrays.asList((long)1, (long)2);
         Map<String, List<Long>> map = new HashMap();
