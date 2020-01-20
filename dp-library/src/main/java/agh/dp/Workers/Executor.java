@@ -14,7 +14,7 @@ public class Executor {
     private static RoleRepository roleRepository = RoleWithPermissionsFacade.INSTANCE.getRoleRepository();
     private static PermissionRepository permissionRepository = RoleWithPermissionsFacade.INSTANCE.getPermissionRepository();
 
-    protected static List<Permission> getUserPermissions(String userName, String tableName, int accessLevel){
+    public static List<Permission> getUserPermissions(String userName, List<String> tableNames, int accessLevel){
         UserServiceMap userServiceMap = new UserServiceMap(userRepository);
         User user = userServiceMap.findByUserName(userName);
 
@@ -30,7 +30,12 @@ public class Executor {
         }
 
         PermissionServiceMap permissionServiceMap = new PermissionServiceMap(permissionRepository);
-        return permissionServiceMap.findAllByRoleIdsAndTableNameAndAccessLevel(userRoleIds, tableName, accessLevel);
+
+        List<Permission> usersPermissions = new ArrayList<>();
+        for (String tableName : tableNames) {
+            usersPermissions.addAll(permissionServiceMap.findAllByRoleIdsAndTableNameAndAccessLevel(userRoleIds, tableName, accessLevel));
+        }
+        return usersPermissions;
     }
 
 }

@@ -1,28 +1,15 @@
 package agh.dp;
 
-import agh.dp.facade.RoleWithPermissionsFacade;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
+import agh.dp.Workers.Executor;
+import agh.dp.models.Permission;
+import agh.dp.querybuilder.QueryBuilder;
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.type.Type;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.security.Principal;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 public class Logging extends EmptyInterceptor {
 
@@ -43,18 +30,28 @@ public class Logging extends EmptyInterceptor {
     @Override
     public String onPrepareStatement(String sql) {
         System.out.println(sql);
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        if (principal instanceof UserDetails) {
+        QueryBuilder queryBuilder = new QueryBuilder();
+        int accessNeededForOperation = queryBuilder.getAccessLevelOfOperation(sql);
+        List<String> tableNames = queryBuilder.getTableNamesFromQuery(sql);
+        List<Permission> permissions = Executor.getUserPermissions(getCurrentUsername(),
+                tableNames,
+                accessNeededForOperation);
 
-            String username = ((UserDetails)principal).getUsername();
-            System.out.println(username);
-        } else {
+        String restrictedSql = queryBuilder.buildQuery(sql, permissions);
 
-            String username = principal.toString();
-            System.out.println(username);
-        }
-        return super.onPrepareStatement(sql);
+        return super.onPrepareStatement(restrictedSql);
     }
 
+    private String getCurrentUsername(){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = null;
+
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails)principal).getUsername();
+        } else {
+            username = principal.toString();
+        }
+        return username;
+    }
 }

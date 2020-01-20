@@ -54,17 +54,15 @@ class WebApplicationTests {
         RoleWithPermissions roleWithPermissions = new RoleWithPermissions.RoleWithPermissionsBuilder("Prezes")
                 .setInheritedRole(2L)
                 .addPermissions("Zarobki",
-                        PermissionsProvider.DELETE + PermissionsProvider.READ,
+                        PermissionsProvider.READ,
                         12, 23, 34)
                 .addPermissions("InnaTabelka",
-                        PermissionsProvider.UPDATE + PermissionsProvider.READ,
+                        PermissionsProvider.UPDATE,
                         10)
                 .addInsertPermissions("Zarobki", "InnaTabelka")
                 .build();
 
         System.out.println("Role builded:" + roleWithPermissions.getRoleName());
-
-        roleWithPermissions.assignUserToRole("KowalskiJan");
     }
 
 }

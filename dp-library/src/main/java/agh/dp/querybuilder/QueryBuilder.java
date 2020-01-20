@@ -1,12 +1,15 @@
 package agh.dp.querybuilder;
 
+import agh.dp.models.Permission;
+import agh.dp.providers.PermissionsProvider;
+
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class QueryBuilder {
 
-    public List<String[]> getTableNames(String startingQuery){
+    private List<String[]> getTableNames(String startingQuery){
         List<String[]> names = new ArrayList<>();
         StringBuilder builder = new StringBuilder(startingQuery);
         Pattern fromPattern = Pattern.compile("from", Pattern.CASE_INSENSITIVE);
@@ -53,7 +56,7 @@ public class QueryBuilder {
         names.add(names2);
     }
 
-    public String buildQuery(String startingQuery, Map<String,List<Long>> permissions){
+    public String buildQuery(String startingQuery, List<Permission> permissions){
         StringBuilder builder = new StringBuilder(startingQuery);
         // delete ":" from query
         builder.deleteCharAt(builder.length()-1);
@@ -82,7 +85,17 @@ public class QueryBuilder {
         else {
             builder.append(" AND ");
         }
-        makeConstraints(permissions, builder, tableNames);
+
+        Map<String, List<Long>> dataForConstraints = new HashMap<>();
+        for (Permission permission : permissions){
+            if (!dataForConstraints.containsKey(permission.getTableName())){
+                dataForConstraints.put(permission.getTableName(), new ArrayList<Long>());
+            }
+            List<Long> currentValue = dataForConstraints.get(permission.getTableName());
+            currentValue.add(permission.getRecordId());
+            dataForConstraints.replace(permission.getTableName(), currentValue);
+        }
+        makeConstraints(dataForConstraints, builder, tableNames);
 
         if (flag){
             builder.append(order);
@@ -109,17 +122,40 @@ public class QueryBuilder {
         builder.delete(builder.length()-4, builder.length());
     }
 
-    public static void main(String[] args) {
-        String s = "SELECT * FROM tab1 tabelka join tab2 babelka  join tab3 bombelek where JAJA order by jaja;";
-        QueryBuilder queryBuilder = new QueryBuilder();
-        List<Long> l = Arrays.asList((long)1, (long)2);
-        Map<String, List<Long>> map = new HashMap();
-        map.put("tab1", l);
-        map.put("tab2", l);
-        map.put("tab3", l);
-
-        String s2 = queryBuilder.buildQuery(s, map);
-        System.out.println(s2);
+    public List<String> getTableNamesFromQuery(String query){
+        List<String[]> tableNamePairs = getTableNames(query);
+        List<String> officialTableNames = new ArrayList<>();
+        for (String[] tableNamePair : tableNamePairs){
+            officialTableNames.add(tableNamePair[0]);
+        }
+        return officialTableNames;
     }
+
+    public int getAccessLevelOfOperation(String query){
+        if (query.toLowerCase().contains("insert")){
+            return PermissionsProvider.INSERT;
+        } else if (query.toLowerCase().contains("select")){
+            return PermissionsProvider.READ;
+        } else if (query.toLowerCase().contains("delete")){
+            return PermissionsProvider.DELETE;
+        } else if (query.toLowerCase().contains("update")){
+            return PermissionsProvider.UPDATE;
+        }
+        return 0;
+    }
+
+
+//    public static void main(String[] args) {
+//        String s = "SELECT * FROM tab1 tabelka join tab2 babelka  join tab3 bombelek where JAJA order by jaja;";
+//        QueryBuilder queryBuilder = new QueryBuilder();
+//        List<Long> l = Arrays.asList((long)1, (long)2);
+//        Map<String, List<Long>> map = new HashMap();
+//        map.put("tab1", l);
+//        map.put("tab2", l);
+//        map.put("tab3", l);
+//
+//        String s2 = queryBuilder.buildQuery(s, map);
+//        System.out.println(s2);
+//    }
 
 }

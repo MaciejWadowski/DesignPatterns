@@ -26,11 +26,6 @@ public class RoleWithPermissions {
         return role.getInheritedRoleId();
     }
 
-    public void assignUserToRole(String userName){
-        User user = new User(userName, this.role.getId());
-        //TODO: save user to database
-    }
-
     public List<Permission> getPermissions(){
         return permissions;
     }
