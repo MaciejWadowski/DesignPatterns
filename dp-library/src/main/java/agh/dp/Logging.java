@@ -5,6 +5,8 @@ import agh.dp.models.Permission;
 import agh.dp.providers.PermissionsProvider;
 import agh.dp.querybuilder.QueryBuilder;
 import org.hibernate.EmptyInterceptor;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.type.Type;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,6 +22,7 @@ public class Logging extends EmptyInterceptor {
     public Logging(Executor executor) {
         this.executor = executor;
     }
+
     // Define a static logger
 
     @Override
@@ -32,6 +35,7 @@ public class Logging extends EmptyInterceptor {
         System.out.println("");
         return false;
     }
+
     // Logging SQL statement
     @Override
     public String onPrepareStatement(String sql) {
@@ -43,16 +47,17 @@ public class Logging extends EmptyInterceptor {
         int accessNeededForOperation = queryBuilder.getAccessLevelOfOperation(sql);
         if (accessNeededForOperation == PermissionsProvider.INSERT){
             String tableName = queryBuilder.getTableNameForInsert(sql);
-            tableNames.add(tableName);
+            if (!executor.hasUserInsertPermission(getCurrentUsername(), tableName)){
+                //this.session.cancelQuery();
+                //restrictedSql = "SELECT 5";
+            }
         } else {
             tableNames = queryBuilder.getTableNamesFromQuery(sql);
-        }
-
-        List<Permission> permissions = executor.getUserPermissions(getCurrentUsername(),
+            List<Permission> permissions = executor.getUserPermissions(getCurrentUsername(),
                     tableNames,
                     accessNeededForOperation);
-
-        restrictedSql = queryBuilder.buildQuery(sql, permissions);
+            restrictedSql = queryBuilder.buildQuery(sql, permissions);
+        }
         return super.onPrepareStatement(restrictedSql);
     }
 
@@ -67,4 +72,12 @@ public class Logging extends EmptyInterceptor {
         }
         return username;
     }
+
+    @Override
+    public void beforeTransactionCompletion(Transaction tx) {
+        tx.getStatus();
+        tx.rollback();
+    }
+
+
 }

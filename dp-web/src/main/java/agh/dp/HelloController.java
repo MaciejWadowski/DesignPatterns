@@ -24,14 +24,14 @@ import java.util.List;
 public class HelloController {
 
     private RoleWithPermissionsFacade facade;
-
     private Session session;
 
     public HelloController(RoleWithPermissionsFacade roleWithPermissionsFacade, Executor executor) {
         this.facade = roleWithPermissionsFacade;
+        Logging logging = new Logging(executor);
         this.session = HibernateUtil.getSessionFactory("org.h2.Driver", "jdbc:h2:mem:testdb", "sa", "", User.class, Student.class)
                 .withOptions()
-                .interceptor(new Logging(executor))
+                .interceptor(logging)
                 .openSession();
     }
 
@@ -47,10 +47,21 @@ public class HelloController {
         facade.assignUserToRole(getCurrentUsername(), roleWithPermissions);
         Iterable<User> users = facade.getUserRepository().findAll();
 
-        //session.save(new Student("maciek", "jakis"));
+        //org.hibernate.Transaction tr = session.beginTransaction();
+//        session.save(new Student("maciek", "jakis"));
+//        session.save(new Student("maciek2", "jakis2"));
+//        session.save(new Student("maciek3", "jakis3"));
+        //tr.commit();
         //System.out.println("student saved");
         Student sampleStudent = session.get(Student.class, 1L);
-        List<Student> allStudents = HibernateUtil.loadAllData(Student.class, session);
+        sampleStudent.setFirstName("Agacia");
+        org.hibernate.Transaction tr = session.beginTransaction();
+        session.update(sampleStudent);
+        tr.commit();
+        Student sampleStudent2 = session.get(Student.class, 3L);
+        sampleStudent2.setFirstName("Agacia");
+        session.update(sampleStudent2);
+        //List<Student> allStudents = HibernateUtil.loadAllData(Student.class, session);
         return "hello";
     }
 

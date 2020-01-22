@@ -33,6 +33,10 @@ public class HibernateUtil {
                 settings.put(Environment.USER, user);
                 settings.put(Environment.PASS, password);
                 settings.put(Environment.HBM2DDL_AUTO, "update");
+                settings.put( Environment.USE_QUERY_CACHE, Boolean.FALSE.toString() );
+                settings.put( Environment.USE_SECOND_LEVEL_CACHE, Boolean.FALSE.toString() );
+                //settings.put(Environment.CACHE_REGION_FACTORY,org.hibernate.cache.impl.NoCachingRegionFactory.class.getName());
+                //settings.put(Environment.CACHE_PROVIDER,org.hibernate.cache.NoCacheProvider.class.getName());
 
                 registryBuilder.applySettings(settings);
                 registry = registryBuilder.build();
