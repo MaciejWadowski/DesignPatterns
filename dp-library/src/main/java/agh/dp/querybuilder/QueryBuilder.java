@@ -9,6 +9,27 @@ import java.util.regex.Pattern;
 
 public class QueryBuilder {
 
+    private String getTableNameForInsert(String  startingQuery){
+        String tableName;
+        int start, end;
+
+        StringBuilder builder = new StringBuilder(startingQuery);
+        Pattern intoPattern = Pattern.compile("into", Pattern.CASE_INSENSITIVE);
+        Matcher intoMatcher = intoPattern.matcher(builder);
+        Pattern valuesPattern = Pattern.compile("values", Pattern.CASE_INSENSITIVE);
+        Matcher valuesMatcher = valuesPattern.matcher(builder);
+
+        intoMatcher.find();
+        start = intoMatcher.end()+1;
+        valuesMatcher.find();
+        end = valuesMatcher.start();
+        tableName = builder.substring(start,end);
+        tableName = tableName.trim();
+        tableName = tableName.split(" ")[0];
+
+        return tableName;
+    }
+
     private List<String[]> getTableNames(String startingQuery){
         List<String[]> names = new ArrayList<>();
         StringBuilder builder = new StringBuilder(startingQuery);
@@ -147,6 +168,7 @@ public class QueryBuilder {
 
 //    public static void main(String[] args) {
 //        String s = "SELECT * FROM tab1 tabelka join tab2 babelka  join tab3 bombelek where JAJA order by jaja;";
+//        String i = "INsert into tab1 (col1, col2 col3) values (nic nic nci);";
 //        QueryBuilder queryBuilder = new QueryBuilder();
 //        List<Long> l = Arrays.asList((long)1, (long)2);
 //        Map<String, List<Long>> map = new HashMap();
@@ -156,6 +178,8 @@ public class QueryBuilder {
 //
 //        String s2 = queryBuilder.buildQuery(s, map);
 //        System.out.println(s2);
+//        String i2 = queryBuilder.getTableNameForInsert(i);
+//        System.out.println(i2);
 //    }
 
 }
