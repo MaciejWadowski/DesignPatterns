@@ -3,63 +3,41 @@ package agh.dp.querybuilder;
 import agh.dp.models.Permission;
 import agh.dp.providers.PermissionsProvider;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class UpdateQueryStrategy implements QueryStrategy {
-    private String getTableNameForInsert(String  startingQuery){
-        String tableName;
-        int start, end;
-
-        StringBuilder builder = new StringBuilder(startingQuery);
-        Pattern intoPattern = Pattern.compile("into", Pattern.CASE_INSENSITIVE);
-        Matcher intoMatcher = intoPattern.matcher(builder);
-        Pattern valuesPattern = Pattern.compile("values", Pattern.CASE_INSENSITIVE);
-        Matcher valuesMatcher = valuesPattern.matcher(builder);
-
-        intoMatcher.find();
-        start = intoMatcher.end()+1;
-        valuesMatcher.find();
-        end = valuesMatcher.start();
-        tableName = builder.substring(start,end);
-        tableName = tableName.trim();
-        tableName = tableName.split(" ")[0];
-
-        return tableName;
-    }
 
     private List<String[]> getTableNames(String startingQuery){
         List<String[]> names = new ArrayList<>();
         StringBuilder builder = new StringBuilder(startingQuery);
-        Pattern fromPattern = Pattern.compile("(set)", Pattern.CASE_INSENSITIVE);
-        Pattern endingOfTableNames = Pattern.compile("(where|order by)");
+        Pattern fromPattern = Pattern.compile("(update)", Pattern.CASE_INSENSITIVE);
+        Pattern endingOfTableNames = Pattern.compile("(set)", Pattern.CASE_INSENSITIVE);
         Matcher matcher1 = fromPattern.matcher(builder);
         Matcher whereMatcher = endingOfTableNames.matcher(builder);
-
         int start;
-
         matcher1.find();
         start = matcher1.end()+1;
+        whereMatcher.find();
         findNewName(names, builder, whereMatcher, start);
         return names;
     }
 
-    private void findNewName(List<String[]> names, StringBuilder builder, Matcher joinMatcher, int start) {
+    private void findNewName(List<String[]> names, StringBuilder builder, Matcher matcher, int start) {
         int end;
         String name;
         String[] names2;
-        end = joinMatcher.start();
-        name = builder.substring(start,end);
-        name = name.trim();
-        names2 = name.split(" ");
-        if (names2.length != 2) {
-            names.set(2, names.get(1));
+        if(matcher.find()){
+            end = matcher.start();
+            name = builder.substring(start,end);
+            name = name.trim();
+            names2 = name.split(" ");
+            if (names2.length != 2) {
+                names.set(1, names.get(0));
+            }
+            names.add(names2);
         }
-        names.add(names2);
     }
 
     public String buildQuery(String startingQuery, List<Permission> permissions){
@@ -68,19 +46,6 @@ public class UpdateQueryStrategy implements QueryStrategy {
         builder.deleteCharAt(builder.length()-1);
 
         List<String[]> tableNames = getTableNames(startingQuery);
-
-        Pattern orderByPattern = Pattern.compile("order by", Pattern.CASE_INSENSITIVE);
-        Matcher orderByMatcher = orderByPattern.matcher(builder);
-        Boolean flag = Boolean.FALSE;
-        String order = "";
-
-        if (orderByMatcher.find()) {
-            flag = Boolean.TRUE;
-            order = builder.substring(orderByMatcher.start(), builder.length());
-            builder.delete(orderByMatcher.start(), builder.length());
-        }
-
-
 
         Pattern wherePattern = Pattern.compile("where", Pattern.CASE_INSENSITIVE);
         Matcher whereMatcher = wherePattern.matcher(builder);
@@ -102,11 +67,7 @@ public class UpdateQueryStrategy implements QueryStrategy {
             dataForConstraints.replace(permission.getTableName(), currentValue);
         }
         makeConstraints(dataForConstraints, builder, tableNames);
-
-        if (flag){
-            builder.append(order);
-        }
-        builder.append(":");
+        builder.append(";");
         return builder.toString();
     }
 
@@ -136,18 +97,13 @@ public class UpdateQueryStrategy implements QueryStrategy {
         }
         return officialTableNames;
     }
-    public int getAccessLevelOfOperation(String query){
-        if (query.toLowerCase().contains("insert")){
-            return PermissionsProvider.INSERT;
-        } else if (query.toLowerCase().contains("select")){
-            return PermissionsProvider.READ;
-        } else if (query.toLowerCase().contains("delete")){
-            return PermissionsProvider.DELETE;
-        } else if (query.toLowerCase().contains("update")){
-            return PermissionsProvider.UPDATE;
-        }
-        return 0;
+
+
+    public static void main(String[] args) {
+        String s = "UPDATE table_name tab set column1 = value1, column2 = value2, ... WHERE condition;";
+        UpdateQueryStrategy queryBuilder = new UpdateQueryStrategy();
+        Permission permission = new Permission("table_name", PermissionsProvider.UPDATE, (long)1, (long)1);
+        String s2 = queryBuilder.buildQuery(s, Collections.singletonList(permission));
+        System.out.println(s2);
     }
-
-
 }

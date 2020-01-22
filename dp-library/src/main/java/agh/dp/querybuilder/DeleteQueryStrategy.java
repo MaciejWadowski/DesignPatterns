@@ -3,10 +3,7 @@ package agh.dp.querybuilder;
 import agh.dp.models.Permission;
 import agh.dp.providers.PermissionsProvider;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,8 +12,10 @@ public class DeleteQueryStrategy implements QueryStrategy {
         List<String[]> names = new ArrayList<>();
         StringBuilder builder = new StringBuilder(startingQuery);
         Pattern fromPattern = Pattern.compile("(from)", Pattern.CASE_INSENSITIVE);
+        Pattern joinPattern = Pattern.compile("(left|right|outer)* ?join", Pattern.CASE_INSENSITIVE);
         Pattern endingOfTableNames = Pattern.compile("(where|order by)");
         Matcher matcher1 = fromPattern.matcher(builder);
+        Matcher joinMatcher = joinPattern.matcher(builder);
         Matcher whereMatcher = endingOfTableNames.matcher(builder);
 
         int start, joinEnd;
@@ -24,7 +23,21 @@ public class DeleteQueryStrategy implements QueryStrategy {
         matcher1.find();
         start = matcher1.end()+1;
 
-        findNewName(names, builder, whereMatcher, start);
+        joinEnd = start;
+
+        while (true){
+            if (joinMatcher.find(joinEnd)) {
+                start = joinEnd;
+                findNewName(names, builder, joinMatcher, start);
+                joinEnd = joinMatcher.end()+1;
+            }
+            else {
+                start = joinEnd;
+                whereMatcher.find(joinEnd);
+                findNewName(names, builder, whereMatcher, start);
+                break;
+            }
+        }
         return names;
     }
 
@@ -90,16 +103,6 @@ public class DeleteQueryStrategy implements QueryStrategy {
         return builder.toString();
     }
 
-    @Override
-    public List<String> getTableNamesFromQuery(String query){
-        List<String[]> tableNamePairs = getTableNames(query);
-        List<String> officialTableNames = new ArrayList<>();
-        for (String[] tableNamePair : tableNamePairs){
-            officialTableNames.add(tableNamePair[0]);
-        }
-        return officialTableNames;
-    }
-
     private void makeConstraints(Map<String, List<Long>> permissions, StringBuilder builder, List<String[]> tableNames) {
         List<Long> perms;
         for (String[] tableName : tableNames) {
@@ -118,17 +121,21 @@ public class DeleteQueryStrategy implements QueryStrategy {
         builder.delete(builder.length()-4, builder.length());
     }
 
-    public int getAccessLevelOfOperation(String query){
-        if (query.toLowerCase().contains("insert")){
-            return PermissionsProvider.INSERT;
-        } else if (query.toLowerCase().contains("select")){
-            return PermissionsProvider.READ;
-        } else if (query.toLowerCase().contains("delete")){
-            return PermissionsProvider.DELETE;
-        } else if (query.toLowerCase().contains("update")){
-            return PermissionsProvider.UPDATE;
+    public List<String> getTableNamesFromQuery(String query){
+        List<String[]> tableNamePairs = getTableNames(query);
+        List<String> officialTableNames = new ArrayList<>();
+        for (String[] tableNamePair : tableNamePairs){
+            officialTableNames.add(tableNamePair[0]);
         }
-        return 0;
+        return officialTableNames;
+    }
+
+    public static void main(String[] args) {
+        String s = "DELETE * FROM tab1 tabelka join tab2 babelka  join tab3 bombelek where JAJA order by jaja;";
+        DeleteQueryStrategy queryBuilder = new DeleteQueryStrategy();
+        Permission permission = new Permission("tab1", PermissionsProvider.DELETE, (long)1, (long)1);
+        String s2 = queryBuilder.buildQuery(s, Collections.singletonList(permission));
+        System.out.println(s2);
     }
 
 }

@@ -130,34 +130,12 @@ public class SelectQueryStrategy implements  QueryStrategy{
         return officialTableNames;
     }
 
-    public int getAccessLevelOfOperation(String query){
-        if (query.toLowerCase().contains("insert")){
-            return PermissionsProvider.INSERT;
-        } else if (query.toLowerCase().contains("select")){
-            return PermissionsProvider.READ;
-        } else if (query.toLowerCase().contains("delete")){
-            return PermissionsProvider.DELETE;
-        } else if (query.toLowerCase().contains("update")){
-            return PermissionsProvider.UPDATE;
-        }
-        return 0;
+    public static void main(String[] args) {
+        String s = "SELECT * FROM tab1 tabelka join tab2 babelka  join tab3 bombelek where JAJA order by jaja;";
+        SelectQueryStrategy queryBuilder = new SelectQueryStrategy();
+        Permission permission = new Permission("tab1", PermissionsProvider.READ, (long)1, (long)1);
+        String s2 = queryBuilder.buildQuery(s, Collections.singletonList(permission));
+        System.out.println(s2);
     }
-
-
-//    public static void main(String[] args) {
-//        String s = "SELECT * FROM tab1 tabelka join tab2 babelka  join tab3 bombelek where JAJA order by jaja;";
-//        String i = "INsert into tab1 (col1, col2 col3) values (nic nic nci);";
-//        QueryBuilder queryBuilder = new QueryBuilder();
-//        List<Long> l = Arrays.asList((long)1, (long)2);
-//        Map<String, List<Long>> map = new HashMap();
-//        map.put("tab1", l);
-//        map.put("tab2", l);
-//        map.put("tab3", l);
-//
-//        String s2 = queryBuilder.buildQuery(s, map);
-//        System.out.println(s2);
-//        String i2 = queryBuilder.getTableNameForInsert(i);
-//        System.out.println(i2);
-//    }
 
 }
