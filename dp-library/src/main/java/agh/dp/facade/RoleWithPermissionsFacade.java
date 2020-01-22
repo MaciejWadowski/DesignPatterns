@@ -12,11 +12,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class RoleWithPermissionsFacade {
 
-    public static final RoleWithPermissionsFacade INSTANCE = new RoleWithPermissionsFacade();
+    //private final RoleWithPermissionsFacade INSTANCE = new RoleWithPermissionsFacade();
 
     UserRepository userRepository;
     PermissionRepository permissionRepository;
     RoleRepository roleRepository;
+
+    public RoleWithPermissionsFacade(UserRepository userRepository, PermissionRepository permissionRepository, RoleRepository roleRepository) {
+        this.userRepository = userRepository;
+        this.permissionRepository = permissionRepository;
+        this.roleRepository = roleRepository;
+    }
 
     public void setPermissionRepository(PermissionRepository permissionRepository, UserRepository userRepository, RoleRepository roleRepository){
         this.permissionRepository = permissionRepository;

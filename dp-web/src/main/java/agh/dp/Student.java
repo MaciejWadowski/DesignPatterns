@@ -20,6 +20,11 @@ public class Student {
         this.lastName = lastName;
     }
 
+    public Student(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     public Long getId() {
         return id;
     }

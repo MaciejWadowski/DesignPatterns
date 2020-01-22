@@ -15,6 +15,11 @@ import java.util.*;
 public class Logging extends EmptyInterceptor {
 
     private static final long serialVersionUID = 1L;
+    Executor executor;
+
+    public Logging(Executor executor) {
+        this.executor = executor;
+    }
     // Define a static logger
 
     @Override
@@ -42,7 +47,8 @@ public class Logging extends EmptyInterceptor {
         } else {
             tableNames = queryBuilder.getTableNamesFromQuery(sql);
         }
-        List<Permission> permissions = Executor.getUserPermissions(getCurrentUsername(),
+
+        List<Permission> permissions = executor.getUserPermissions(getCurrentUsername(),
                     tableNames,
                     accessNeededForOperation);
 

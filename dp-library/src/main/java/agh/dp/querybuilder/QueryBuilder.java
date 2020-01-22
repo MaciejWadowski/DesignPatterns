@@ -79,9 +79,6 @@ public class QueryBuilder {
 
     public String buildQuery(String startingQuery, List<Permission> permissions){
         StringBuilder builder = new StringBuilder(startingQuery);
-        // delete ":" from query
-        builder.deleteCharAt(builder.length()-1);
-
         List<String[]> tableNames = getTableNames(startingQuery);
 
         Pattern orderByPattern = Pattern.compile("order by", Pattern.CASE_INSENSITIVE);
@@ -121,7 +118,6 @@ public class QueryBuilder {
         if (flag){
             builder.append(order);
         }
-        builder.append(":");
         return builder.toString();
     }
 

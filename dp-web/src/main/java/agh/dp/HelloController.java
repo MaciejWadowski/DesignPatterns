@@ -1,9 +1,17 @@
 package agh.dp;
 
+import agh.dp.Workers.Executor;
 import agh.dp.database.UserRepository;
+import agh.dp.facade.RoleWithPermissionsFacade;
+import agh.dp.models.Permission;
+import agh.dp.models.Role;
+import agh.dp.models.RoleWithPermissions;
 import agh.dp.models.User;
+import agh.dp.providers.PermissionsProvider;
 import agh.dp.utils.HibernateUtil;
 import org.hibernate.Session;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,24 +23,33 @@ import java.util.List;
 @Controller
 public class HelloController {
 
-    private final Session session = HibernateUtil.getSessionFactory("org.h2.Driver", "jdbc:h2:mem:testdb", "sa", "", User.class, Student.class)
-            .withOptions()
-            .interceptor(new Logging())
-            .openSession();
+    private RoleWithPermissionsFacade facade;
 
-    public HelloController(UserRepository repository) {
+    private Session session;
 
+    public HelloController(RoleWithPermissionsFacade roleWithPermissionsFacade, Executor executor) {
+        this.facade = roleWithPermissionsFacade;
+        this.session = HibernateUtil.getSessionFactory("org.h2.Driver", "jdbc:h2:mem:testdb", "sa", "", User.class, Student.class)
+                .withOptions()
+                .interceptor(new Logging(executor))
+                .openSession();
     }
 
     @GetMapping(value = {"hello", "/hello", "hello.html"})
     public String bugHandler() {
-        session.save(new User("username", 2L));
-        System.out.println("boop");
-        session.get(User.class, 1L);
+        RoleWithPermissions roleWithPermissions = new RoleWithPermissions.RoleWithPermissionsBuilder("nazwa")
+                .addPermissions("Student", PermissionsProvider.READ, 1,2,3,4)
+                .addPermissions("Student", PermissionsProvider.UPDATE, 3)
+                .build();
+        facade.saveRoleWithPermissions(roleWithPermissions);
+        Iterable<Role> roles = facade.getRoleRepository().findAll();
+        Iterable<Permission> permissions = facade.getPermissionRepository().findAll();
+        facade.assignUserToRole(getCurrentUsername(), roleWithPermissions);
+        Iterable<User> users = facade.getUserRepository().findAll();
 
-        session.save(new Student(1L, "maciek", "jakis"));
-        System.out.println("student saved");
-        session.get(Student.class, 1L);
+        //session.save(new Student("maciek", "jakis"));
+        //System.out.println("student saved");
+        Student sampleStudent = session.get(Student.class, 1L);
         List<Student> allStudents = HibernateUtil.loadAllData(Student.class, session);
         return "hello";
     }
@@ -65,5 +82,17 @@ public class HelloController {
             }
         }
         return "hello";
+    }
+
+    private String getCurrentUsername(){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = null;
+
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails)principal).getUsername();
+        } else {
+            username = principal.toString();
+        }
+        return username;
     }
 }
