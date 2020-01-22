@@ -3,12 +3,14 @@ package agh.dp.querybuilder;
 import agh.dp.models.Permission;
 import agh.dp.providers.PermissionsProvider;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class QueryBuilder {
-
+public class UpdateQueryStrategy implements QueryStrategy {
     private String getTableNameForInsert(String  startingQuery){
         String tableName;
         int start, end;
@@ -33,33 +35,16 @@ public class QueryBuilder {
     private List<String[]> getTableNames(String startingQuery){
         List<String[]> names = new ArrayList<>();
         StringBuilder builder = new StringBuilder(startingQuery);
-        Pattern fromPattern = Pattern.compile("(from|into|set)", Pattern.CASE_INSENSITIVE);
-        Pattern joinPattern = Pattern.compile("(left|right|outer)* ?join", Pattern.CASE_INSENSITIVE);
+        Pattern fromPattern = Pattern.compile("(set)", Pattern.CASE_INSENSITIVE);
         Pattern endingOfTableNames = Pattern.compile("(where|order by)");
         Matcher matcher1 = fromPattern.matcher(builder);
-        Matcher joinMatcher = joinPattern.matcher(builder);
         Matcher whereMatcher = endingOfTableNames.matcher(builder);
 
-        int start, joinEnd;
+        int start;
 
         matcher1.find();
         start = matcher1.end()+1;
-
-        joinEnd = start;
-
-        while (true){
-            if (joinMatcher.find(joinEnd)) {
-                start = joinEnd;
-                findNewName(names, builder, joinMatcher, start);
-                joinEnd = joinMatcher.end()+1;
-            }
-            else {
-                start = joinEnd;
-                whereMatcher.find(joinEnd);
-                findNewName(names, builder, whereMatcher, start);
-                break;
-            }
-        }
+        findNewName(names, builder, whereMatcher, start);
         return names;
     }
 
@@ -151,7 +136,6 @@ public class QueryBuilder {
         }
         return officialTableNames;
     }
-
     public int getAccessLevelOfOperation(String query){
         if (query.toLowerCase().contains("insert")){
             return PermissionsProvider.INSERT;
@@ -165,21 +149,5 @@ public class QueryBuilder {
         return 0;
     }
 
-
-//    public static void main(String[] args) {
-//        String s = "SELECT * FROM tab1 tabelka join tab2 babelka  join tab3 bombelek where JAJA order by jaja;";
-//        String i = "INsert into tab1 (col1, col2 col3) values (nic nic nci);";
-//        QueryBuilder queryBuilder = new QueryBuilder();
-//        List<Long> l = Arrays.asList((long)1, (long)2);
-//        Map<String, List<Long>> map = new HashMap();
-//        map.put("tab1", l);
-//        map.put("tab2", l);
-//        map.put("tab3", l);
-//
-//        String s2 = queryBuilder.buildQuery(s, map);
-//        System.out.println(s2);
-//        String i2 = queryBuilder.getTableNameForInsert(i);
-//        System.out.println(i2);
-//    }
 
 }
