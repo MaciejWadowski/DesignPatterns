@@ -114,8 +114,6 @@ class RoleRepositoryTest {
         }
 
         RoleWithPermissionsFacade facade = RoleWithPermissionsFacade.INSTANCE;
-        facade.setRoleRepository(roleRepository);
-        facade.setPermissionRepository(permissionRepository);
         facade.saveRoleWithPermissions(roleWithPermissions);
 
     }

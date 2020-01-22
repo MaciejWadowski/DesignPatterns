@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 public class QueryBuilder {
 
-    private String getTableNameForInsert(String  startingQuery){
+    public String getTableNameForInsert(String startingQuery){
         String tableName;
         int start, end;
 

@@ -7,7 +7,9 @@ import agh.dp.models.Permission;
 import agh.dp.models.Role;
 import agh.dp.models.RoleWithPermissions;
 import agh.dp.models.User;
+import org.springframework.stereotype.Component;
 
+@Component
 public class RoleWithPermissionsFacade {
 
     public static final RoleWithPermissionsFacade INSTANCE = new RoleWithPermissionsFacade();
@@ -16,10 +18,10 @@ public class RoleWithPermissionsFacade {
     PermissionRepository permissionRepository;
     RoleRepository roleRepository;
 
-    private RoleWithPermissionsFacade() {}
-
-    public void setPermissionRepository(PermissionRepository permissionRepository){
+    public void setPermissionRepository(PermissionRepository permissionRepository, UserRepository userRepository, RoleRepository roleRepository){
         this.permissionRepository = permissionRepository;
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 
     public void setRoleRepository(RoleRepository roleRepository){

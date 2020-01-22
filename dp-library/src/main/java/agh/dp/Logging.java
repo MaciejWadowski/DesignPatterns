@@ -32,19 +32,21 @@ public class Logging extends EmptyInterceptor {
     public String onPrepareStatement(String sql) {
         System.out.println(sql);
         String restrictedSql = sql;
+        List<String> tableNames = new ArrayList<>();
 
         QueryBuilder queryBuilder = new QueryBuilder();
         int accessNeededForOperation = queryBuilder.getAccessLevelOfOperation(sql);
         if (accessNeededForOperation == PermissionsProvider.INSERT){
-
+            String tableName = queryBuilder.getTableNameForInsert(sql);
+            tableNames.add(tableName);
         } else {
-            List<String> tableNames = queryBuilder.getTableNamesFromQuery(sql);
-            List<Permission> permissions = Executor.getUserPermissions(getCurrentUsername(),
+            tableNames = queryBuilder.getTableNamesFromQuery(sql);
+        }
+        List<Permission> permissions = Executor.getUserPermissions(getCurrentUsername(),
                     tableNames,
                     accessNeededForOperation);
 
-            restrictedSql = queryBuilder.buildQuery(sql, permissions);
-        }
+        restrictedSql = queryBuilder.buildQuery(sql, permissions);
         return super.onPrepareStatement(restrictedSql);
     }
 
