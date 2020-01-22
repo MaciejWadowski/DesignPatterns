@@ -90,6 +90,16 @@ public class DeleteQueryStrategy implements QueryStrategy {
         return builder.toString();
     }
 
+    @Override
+    public List<String> getTableNamesFromQuery(String query){
+        List<String[]> tableNamePairs = getTableNames(query);
+        List<String> officialTableNames = new ArrayList<>();
+        for (String[] tableNamePair : tableNamePairs){
+            officialTableNames.add(tableNamePair[0]);
+        }
+        return officialTableNames;
+    }
+
     private void makeConstraints(Map<String, List<Long>> permissions, StringBuilder builder, List<String[]> tableNames) {
         List<Long> perms;
         for (String[] tableName : tableNames) {
