@@ -12,7 +12,7 @@ public class QueryBuilder {
     private List<String[]> getTableNames(String startingQuery){
         List<String[]> names = new ArrayList<>();
         StringBuilder builder = new StringBuilder(startingQuery);
-        Pattern fromPattern = Pattern.compile("from", Pattern.CASE_INSENSITIVE);
+        Pattern fromPattern = Pattern.compile("(from|into|set)", Pattern.CASE_INSENSITIVE);
         Pattern joinPattern = Pattern.compile("(left|right|outer)* ?join", Pattern.CASE_INSENSITIVE);
         Pattern endingOfTableNames = Pattern.compile("(where|order by)");
         Matcher matcher1 = fromPattern.matcher(builder);
