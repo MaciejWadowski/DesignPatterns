@@ -57,4 +57,11 @@ public class RoleWithPermissionsFacade {
             }
         }
     }
+
+    public void assignUserToRole(String username, RoleWithPermissions roleWithPermissions){
+        if (roleWithPermissions.getRole() != null && roleWithPermissions.getRole().getId() != 0){
+            User user = new User(username, roleWithPermissions.getRole().getId());
+            userRepository.save(user);
+        }
+    }
 }
