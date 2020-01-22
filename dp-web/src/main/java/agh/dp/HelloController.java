@@ -10,11 +10,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Controller
 public class HelloController {
-
-    private final UserRepository repository;
 
     private final Session session = HibernateUtil.getSessionFactory("org.h2.Driver", "jdbc:h2:mem:testdb", "sa", "", User.class, Student.class)
             .withOptions()
@@ -22,7 +21,7 @@ public class HelloController {
             .openSession();
 
     public HelloController(UserRepository repository) {
-        this.repository = repository;
+
     }
 
     @GetMapping(value = {"hello", "/hello", "hello.html"})
@@ -34,6 +33,7 @@ public class HelloController {
         session.save(new Student(1L, "maciek", "jakis"));
         System.out.println("student saved");
         session.get(Student.class, 1L);
+        List<Student> allStudents = HibernateUtil.loadAllData(Student.class, session);
         return "hello";
     }
 

@@ -2,6 +2,7 @@ package agh.dp;
 
 import agh.dp.Workers.Executor;
 import agh.dp.models.Permission;
+import agh.dp.providers.PermissionsProvider;
 import agh.dp.querybuilder.QueryBuilder;
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.type.Type;
@@ -30,16 +31,20 @@ public class Logging extends EmptyInterceptor {
     @Override
     public String onPrepareStatement(String sql) {
         System.out.println(sql);
+        String restrictedSql = sql;
 
         QueryBuilder queryBuilder = new QueryBuilder();
         int accessNeededForOperation = queryBuilder.getAccessLevelOfOperation(sql);
-        List<String> tableNames = queryBuilder.getTableNamesFromQuery(sql);
-        List<Permission> permissions = Executor.getUserPermissions(getCurrentUsername(),
-                tableNames,
-                accessNeededForOperation);
+        if (accessNeededForOperation == PermissionsProvider.INSERT){
 
-        String restrictedSql = queryBuilder.buildQuery(sql, permissions);
+        } else {
+            List<String> tableNames = queryBuilder.getTableNamesFromQuery(sql);
+            List<Permission> permissions = Executor.getUserPermissions(getCurrentUsername(),
+                    tableNames,
+                    accessNeededForOperation);
 
+            restrictedSql = queryBuilder.buildQuery(sql, permissions);
+        }
         return super.onPrepareStatement(restrictedSql);
     }
 
