@@ -8,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SelectQueryStrategy implements  QueryStrategy{
+
     private List<String[]> getTableNames(String startingQuery){
         List<String[]> names = new ArrayList<>();
         StringBuilder builder = new StringBuilder(startingQuery);
@@ -45,7 +46,12 @@ public class SelectQueryStrategy implements  QueryStrategy{
         int end;
         String name;
         String[] names2;
-        end = joinMatcher.start();
+        if(joinMatcher.find()){
+            end = joinMatcher.start();
+        }
+        else {
+            end = builder.length();
+        }
         name = builder.substring(start,end);
         name = name.trim();
         names2 = name.split(" ");
@@ -70,8 +76,6 @@ public class SelectQueryStrategy implements  QueryStrategy{
             order = builder.substring(orderByMatcher.start(), builder.length());
             builder.delete(orderByMatcher.start(), builder.length());
         }
-
-
 
         Pattern wherePattern = Pattern.compile("where", Pattern.CASE_INSENSITIVE);
         Matcher whereMatcher = wherePattern.matcher(builder);
@@ -105,6 +109,7 @@ public class SelectQueryStrategy implements  QueryStrategy{
         for (String[] tableName : tableNames) {
             perms = permissions.getOrDefault(tableName[0], null);
             if (perms == null) {
+                builder.append(tableName[1]).append(".ID == null AND ");
                 continue;
             }
             builder.append(tableName[1]).append(".ID IN (");
@@ -128,9 +133,9 @@ public class SelectQueryStrategy implements  QueryStrategy{
     }
 
     public static void main(String[] args) {
-        String s = "SELECT * FROM tab1 tabelka join tab2 babelka  join tab3 bombelek where JAJA order by jaja;";
+        String s = "select student0_.id as id1_0_, student0_.FIRSTNAME as FIRSTNAM2_0_, student0_.LASTNAME as LASTNAME3_0_ from Student student0_";
         SelectQueryStrategy queryBuilder = new SelectQueryStrategy();
-        Permission permission = new Permission("tab1", PermissionsProvider.READ, (long)1, (long)1);
+        Permission permission = new Permission("Student", PermissionsProvider.READ, (long)1, (long)1);
         String s2 = queryBuilder.buildQuery(s, Collections.singletonList(permission));
         System.out.println(s2);
     }
