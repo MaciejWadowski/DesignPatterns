@@ -127,12 +127,12 @@ public class SelectQueryStrategy implements  QueryStrategy{
         return officialTableNames;
     }
 
-//    public static void main(String[] args) {
-//        String s = "SELECT * FROM tab1 tabelka join tab2 babelka  join tab3 bombelek where JAJA order by jaja;";
-//        SelectQueryStrategy queryBuilder = new SelectQueryStrategy();
-//        Permission permission = new Permission("tab1", PermissionsProvider.READ, (long)1, (long)1);
-//        String s2 = queryBuilder.buildQuery(s, Collections.singletonList(permission));
-//        System.out.println(s2);
-//    }
+    public static void main(String[] args) {
+        String s = "SELECT * FROM tab1 tabelka join tab2 babelka  join tab3 bombelek where JAJA order by jaja;";
+        SelectQueryStrategy queryBuilder = new SelectQueryStrategy();
+        Permission permission = new Permission("tab1", PermissionsProvider.READ, (long)1, (long)1);
+        String s2 = queryBuilder.buildQuery(s, Collections.singletonList(permission));
+        System.out.println(s2);
+    }
 
 }
