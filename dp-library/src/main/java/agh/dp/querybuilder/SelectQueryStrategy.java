@@ -46,19 +46,23 @@ public class SelectQueryStrategy implements  QueryStrategy{
         int end;
         String name;
         String[] names2;
-        if(joinMatcher.find()){
+        if (joinMatcher.find()) {
             end = joinMatcher.start();
-        }
-        else {
+        } else {
             end = builder.length();
         }
-        name = builder.substring(start,end);
+        name = builder.substring(start, end);
         name = name.trim();
         names2 = name.split(" ");
-        if (names2.length != 2) {
-            names.set(2, names.get(1));
+        if (names2.length > 2) {
+            names2 = Arrays.copyOfRange(names2, 0, 2);
         }
-        names.add(names2);
+        if (names2 != null) {
+            if (names2.length <= 2) {
+                names2[1] = names2[0];
+            }
+            names.add(names2);
+        }
     }
 
     public String buildQuery(String startingQuery, List<Permission> permissions){
@@ -134,6 +138,7 @@ public class SelectQueryStrategy implements  QueryStrategy{
 
     public static void main(String[] args) {
         String s = "select student0_.id as id1_0_, student0_.FIRSTNAME as FIRSTNAM2_0_, student0_.LASTNAME as LASTNAME3_0_ from Student student0_";
+        String s1 = "select student0_.id as id1_0_0_, student0_.FIRSTNAME as FIRSTNAM2_0_0_, student0_.LASTNAME as LASTNAME3_0_0_ from Student student0_ where student0_.id=?";
         SelectQueryStrategy queryBuilder = new SelectQueryStrategy();
         Permission permission = new Permission("Student", PermissionsProvider.READ, (long)1, (long)1);
         String s2 = queryBuilder.buildQuery(s, Collections.singletonList(permission));
