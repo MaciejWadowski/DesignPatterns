@@ -1,39 +1,70 @@
 package agh.dp;
 
+import agh.dp.Workers.Executor;
 import agh.dp.database.UserRepository;
+import agh.dp.facade.RoleWithPermissionsFacade;
+import agh.dp.models.Permission;
+import agh.dp.models.Role;
+import agh.dp.models.RoleWithPermissions;
 import agh.dp.models.User;
+import agh.dp.providers.PermissionsProvider;
 import agh.dp.utils.HibernateUtil;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Controller
 public class HelloController {
 
-    private final UserRepository repository;
+    private RoleWithPermissionsFacade facade;
+    private Session session;
 
-    private final Session session = HibernateUtil.getSessionFactory("org.h2.Driver", "jdbc:h2:mem:testdb", "sa", "", User.class, Student.class)
-            .withOptions()
-            .interceptor(new Logging())
-            .openSession();
-
-    public HelloController(UserRepository repository) {
-        this.repository = repository;
+    public HelloController(RoleWithPermissionsFacade roleWithPermissionsFacade, Executor executor) {
+        this.facade = roleWithPermissionsFacade;
+        Logging logging = new Logging(executor);
+        this.session = HibernateUtil.getSessionFactory("org.h2.Driver", "jdbc:h2:mem:testdb", "sa", "", User.class, Student.class)
+                .withOptions()
+                .interceptor(logging)
+                .openSession();
     }
 
     @GetMapping(value = {"hello", "/hello", "hello.html"})
     public String bugHandler() {
-        session.save(new User("username", 2L));
-        System.out.println("boop");
-        session.get(User.class, 1L);
+        RoleWithPermissions roleWithPermissions = new RoleWithPermissions.RoleWithPermissionsBuilder("nazwa")
+                .addPermissions("Student", PermissionsProvider.READ, 2,3,4)
+                .addPermissions("Student", PermissionsProvider.UPDATE, 3)
+                .addPermissions("Student", PermissionsProvider.DELETE, 3)
+                .build();
+        facade.saveRoleWithPermissions(roleWithPermissions);
+        Iterable<Role> roles = facade.getRoleRepository().findAll();
+        Iterable<Permission> permissions = facade.getPermissionRepository().findAll();
+        facade.assignUserToRole(getCurrentUsername(), roleWithPermissions);
+        Iterable<User> users = facade.getUserRepository().findAll();
 
-        session.save(new Student(1L, "maciek", "jakis"));
-        System.out.println("student saved");
-        session.get(Student.class, 1L);
+        //org.hibernate.Transaction tr = session.beginTransaction();
+//        session.save(new Student("maciek", "jakis"));
+//        session.save(new Student("maciek2", "jakis2"));
+//        session.save(new Student("maciek3", "jakis3"));
+        //tr.commit();
+        //System.out.println("student saved");
+        Student sampleStudent = session.get(Student.class, 1L);
+        Student sampleStudent2 = session.get(Student.class, 3L);
+        sampleStudent2.setFirstName("Agacia");
+        Transaction tr = session.beginTransaction();
+        session.update(sampleStudent2);
+        tr.commit();
+        tr = session.beginTransaction();
+        session.delete(sampleStudent2);
+        tr.commit();
+        //List<Student> allStudents = HibernateUtil.loadAllData(Student.class, session);
         return "hello";
     }
 
@@ -65,5 +96,17 @@ public class HelloController {
             }
         }
         return "hello";
+    }
+
+    private String getCurrentUsername(){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = null;
+
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails)principal).getUsername();
+        } else {
+            username = principal.toString();
+        }
+        return username;
     }
 }

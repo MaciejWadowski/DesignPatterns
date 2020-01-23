@@ -113,10 +113,5 @@ class RoleRepositoryTest {
             idCounter += 1L;
         }
 
-        RoleWithPermissionsFacade facade = RoleWithPermissionsFacade.INSTANCE;
-        facade.setRoleRepository(roleRepository);
-        facade.setPermissionRepository(permissionRepository);
-        facade.saveRoleWithPermissions(roleWithPermissions);
-
     }
 }

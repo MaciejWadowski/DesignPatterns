@@ -1,33 +1,42 @@
 package agh.dp;
 
-import agh.dp.facade.RoleWithPermissionsFacade;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
+import agh.dp.Workers.Executor;
+import agh.dp.models.Permission;
+import agh.dp.providers.PermissionsProvider;
+import agh.dp.querybuilder.*;
 import org.hibernate.EmptyInterceptor;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.type.Type;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.security.Principal;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.Locale;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Logging extends EmptyInterceptor {
 
     private static final long serialVersionUID = 1L;
+    Executor executor;
+
+    public Logging(Executor executor) {
+        this.executor = executor;
+    }
+
     // Define a static logger
+    private int getAccessLevelOfOperation(String query){
+        if (query.toLowerCase().contains("insert")){
+            return PermissionsProvider.INSERT;
+        } else if (query.toLowerCase().contains("select")){
+            return PermissionsProvider.READ;
+        } else if (query.toLowerCase().contains("delete")){
+            return PermissionsProvider.DELETE;
+        } else if (query.toLowerCase().contains("update")){
+            return PermissionsProvider.UPDATE;
+        }
+        return 0;
+    }
 
     @Override
     public boolean onSave(
@@ -39,22 +48,55 @@ public class Logging extends EmptyInterceptor {
         System.out.println("");
         return false;
     }
+
     // Logging SQL statement
     @Override
     public String onPrepareStatement(String sql) {
         System.out.println(sql);
+        String restrictedSql = sql;
+        List<String> tableNames = new ArrayList<>();
+
+        QueryStrategy queryStrategy;
+        int accessNeededForOperation = getAccessLevelOfOperation(sql);
+        if (accessNeededForOperation == PermissionsProvider.INSERT){
+            queryStrategy = new InsertQueryStrategy();
+
+        }
+        else if (accessNeededForOperation == PermissionsProvider.DELETE){
+            queryStrategy = new DeleteQueryStrategy();
+        }
+        else if (accessNeededForOperation == PermissionsProvider.UPDATE) {
+            queryStrategy = new UpdateQueryStrategy();
+        }
+        else {
+            queryStrategy = new SelectQueryStrategy();
+        }
+        tableNames = queryStrategy.getTableNamesFromQuery(sql);
+        List<Permission> permissions = executor.getUserPermissions(getCurrentUsername(),
+                tableNames,
+                accessNeededForOperation);
+
+        restrictedSql = queryStrategy.buildQuery(sql, permissions);
+        return super.onPrepareStatement(restrictedSql);
+    }
+
+    private String getCurrentUsername(){
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = null;
 
         if (principal instanceof UserDetails) {
-
-            String username = ((UserDetails)principal).getUsername();
-            System.out.println(username);
+            username = ((UserDetails)principal).getUsername();
         } else {
-
-            String username = principal.toString();
-            System.out.println(username);
+            username = principal.toString();
         }
-        return super.onPrepareStatement(sql);
+        return username;
     }
+
+    @Override
+    public void beforeTransactionCompletion(Transaction tx) {
+        tx.getStatus();
+        tx.rollback();
+    }
+
 
 }

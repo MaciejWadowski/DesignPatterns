@@ -7,19 +7,27 @@ import agh.dp.models.Permission;
 import agh.dp.models.Role;
 import agh.dp.models.RoleWithPermissions;
 import agh.dp.models.User;
+import org.springframework.stereotype.Component;
 
+@Component
 public class RoleWithPermissionsFacade {
 
-    public static final RoleWithPermissionsFacade INSTANCE = new RoleWithPermissionsFacade();
+    //private final RoleWithPermissionsFacade INSTANCE = new RoleWithPermissionsFacade();
 
     UserRepository userRepository;
     PermissionRepository permissionRepository;
     RoleRepository roleRepository;
 
-    private RoleWithPermissionsFacade() {}
-
-    public void setPermissionRepository(PermissionRepository permissionRepository){
+    public RoleWithPermissionsFacade(UserRepository userRepository, PermissionRepository permissionRepository, RoleRepository roleRepository) {
+        this.userRepository = userRepository;
         this.permissionRepository = permissionRepository;
+        this.roleRepository = roleRepository;
+    }
+
+    public void setPermissionRepository(PermissionRepository permissionRepository, UserRepository userRepository, RoleRepository roleRepository){
+        this.permissionRepository = permissionRepository;
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 
     public void setRoleRepository(RoleRepository roleRepository){
@@ -55,6 +63,13 @@ public class RoleWithPermissionsFacade {
                 permission.setRoleId(savedRole.getId());
                 permissionRepository.save(permission);
             }
+        }
+    }
+
+    public void assignUserToRole(String username, RoleWithPermissions roleWithPermissions){
+        if (roleWithPermissions.getRole() != null && roleWithPermissions.getRole().getId() != 0){
+            User user = new User(username, roleWithPermissions.getRole().getId());
+            userRepository.save(user);
         }
     }
 }
