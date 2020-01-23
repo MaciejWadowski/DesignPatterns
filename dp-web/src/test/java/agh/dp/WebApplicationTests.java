@@ -2,18 +2,13 @@ package agh.dp;
 
 import agh.dp.database.PermissionRepository;
 import agh.dp.database.RoleRepository;
-import agh.dp.facade.RoleWithPermissionsFacade;
-import agh.dp.models.Role;
 import agh.dp.models.RoleWithPermissions;
 import agh.dp.providers.PermissionsProvider;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;

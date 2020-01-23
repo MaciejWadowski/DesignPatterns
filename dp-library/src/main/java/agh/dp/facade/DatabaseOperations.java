@@ -22,7 +22,7 @@ public class DatabaseOperations {
 
     public Boolean delete(Object object, Class clazz, Serializable key) {
         Boolean flag = true;
-        try {
+        //try {
             org.hibernate.Transaction tr = session.beginTransaction();
             Object o = session.get(clazz, key);
             if (o == null) {
@@ -30,9 +30,9 @@ public class DatabaseOperations {
             }
             session.delete(o);
             tr.commit();
-        } catch (Exception e) {
-            flag = false;
-        }
+        //} catch (Exception e) {
+        //    flag = false;
+        //}
         return flag;
     }
 

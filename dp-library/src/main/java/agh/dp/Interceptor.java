@@ -15,13 +15,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Logging extends EmptyInterceptor {
+public class Interceptor extends EmptyInterceptor {
 
     private static final long serialVersionUID = 1L;
     private boolean rollbackFlag = false;
-    Executor executor;
+    private Executor executor;
 
-    public Logging(Executor executor) {
+    public Interceptor(Executor executor) {
         this.executor = executor;
     }
 
@@ -39,44 +39,45 @@ public class Logging extends EmptyInterceptor {
         return 0;
     }
 
+
     @Override
-    public boolean onSave(
-            Object entity,
-            Serializable id,
-            Object[] state,
-            String[] propertyNames,
-            Type[] types) {
-        System.out.println("");
-        return false;
+    public void onDelete(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
+        //executor.hasUserPermissionToRecord(getCurrentUsername(), )
+        String objectType = entity.getClass().toString().substring(entity.getClass().toString().lastIndexOf(".")+1, entity.getClass().toString().length());
+        if (!executor.hasUserPermissionToRecord(getCurrentUsername(), objectType, PermissionsProvider.DELETE, (Long)id)){
+            rollbackFlag = true;
+        }
+        super.onDelete(entity, id, state, propertyNames, types);
     }
 
-    // Logging SQL statement
     @Override
     public String onPrepareStatement(String sql) {
         System.out.println(sql);
         String restrictedSql = sql;
         List<String> tableNames = new ArrayList<>();
 
-        QueryStrategy queryStrategy;
+        QueryStrategy queryStrategy = null;
         int accessNeededForOperation = getAccessLevelOfOperation(sql);
         if (accessNeededForOperation == PermissionsProvider.INSERT){
             queryStrategy = new InsertQueryStrategy();
         }
-        else if (accessNeededForOperation == PermissionsProvider.DELETE){
-            queryStrategy = new DeleteQueryStrategy();
-        }
+//        else if (accessNeededForOperation == PermissionsProvider.DELETE){
+//            queryStrategy = new DeleteQueryStrategy();
+//        }
         else if (accessNeededForOperation == PermissionsProvider.UPDATE) {
             queryStrategy = new UpdateQueryStrategy();
         }
-        else {
+        else if (accessNeededForOperation == PermissionsProvider.READ) {
             queryStrategy = new SelectQueryStrategy();
         }
-        tableNames = queryStrategy.getTableNamesFromQuery(sql);
-        List<Permission> permissions = executor.getUserPermissions(getCurrentUsername(),
-                tableNames,
-                accessNeededForOperation);
+        if (queryStrategy != null) {
+            tableNames = queryStrategy.getTableNamesFromQuery(sql);
+            List<Permission> permissions = executor.getUserPermissions(getCurrentUsername(),
+                    tableNames,
+                    accessNeededForOperation);
 
-        restrictedSql = queryStrategy.buildQuery(sql, permissions);
+            restrictedSql = queryStrategy.buildQuery(sql, permissions);
+        }
         if (restrictedSql == null){
             rollbackFlag = true;
             return super.onPrepareStatement(sql);

@@ -1,9 +1,9 @@
 package agh.dp;
 
 import agh.dp.Workers.Executor;
+import agh.dp.facade.SafetyModuleFacade;
 import agh.dp.database.UserRepository;
 import agh.dp.facade.DatabaseOperations;
-import agh.dp.facade.RoleWithPermissionsFacade;
 import agh.dp.models.Permission;
 import agh.dp.models.Role;
 import agh.dp.models.RoleWithPermissions;
@@ -15,7 +15,6 @@ import org.hibernate.Transaction;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -25,16 +24,16 @@ import java.util.List;
 @Controller
 public class HelloController {
 
-    private RoleWithPermissionsFacade facade;
+    private SafetyModuleFacade facade;
     private Session session;
     private DatabaseOperations db;
 
-    public HelloController(RoleWithPermissionsFacade roleWithPermissionsFacade, Executor executor) {
-        this.facade = roleWithPermissionsFacade;
-        Logging logging = new Logging(executor);
+    public HelloController(SafetyModuleFacade safetyModuleFacade, Executor executor) {
+        this.facade = safetyModuleFacade;
+        Interceptor interceptor = new Interceptor(executor);
         this.session = HibernateUtil.getSessionFactory("org.h2.Driver", "jdbc:h2:mem:testdb", "sa", "", User.class, Student.class)
                 .withOptions()
-                .interceptor(logging)
+                .interceptor(interceptor)
                 .openSession();
         db = new DatabaseOperations(session);
     }
@@ -45,7 +44,7 @@ public class HelloController {
                 .addInsertPermissions("Student")
                 .addPermissions("Student", PermissionsProvider.READ, 1,2,3)
                 .addPermissions("Student", PermissionsProvider.UPDATE, 1,4)
-                .addPermissions("Student", PermissionsProvider.DELETE, 3)
+                .addPermissions("Student", PermissionsProvider.DELETE, 1)
                 .build();
         facade.saveRoleWithPermissions(roleWithPermissionsPrimary);
 
@@ -59,6 +58,7 @@ public class HelloController {
         Iterable<Role> roles = facade.getRoleRepository().findAll();
         Iterable<Permission> permissions = facade.getPermissionRepository().findAll();
         facade.assignUserToRole(getCurrentUsername(), roleWithPermissions);
+
         return "hello";
     }
 

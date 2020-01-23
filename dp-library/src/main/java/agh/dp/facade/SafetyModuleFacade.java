@@ -10,32 +10,16 @@ import agh.dp.models.User;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RoleWithPermissionsFacade {
-
-    //private final RoleWithPermissionsFacade INSTANCE = new RoleWithPermissionsFacade();
+public class SafetyModuleFacade {
 
     UserRepository userRepository;
     PermissionRepository permissionRepository;
     RoleRepository roleRepository;
 
-    public RoleWithPermissionsFacade(UserRepository userRepository, PermissionRepository permissionRepository, RoleRepository roleRepository) {
+    public SafetyModuleFacade(UserRepository userRepository, PermissionRepository permissionRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.permissionRepository = permissionRepository;
         this.roleRepository = roleRepository;
-    }
-
-    public void setPermissionRepository(PermissionRepository permissionRepository, UserRepository userRepository, RoleRepository roleRepository){
-        this.permissionRepository = permissionRepository;
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-    }
-
-    public void setRoleRepository(RoleRepository roleRepository){
-        this.roleRepository = roleRepository;
-    }
-
-    public void setUserRepository(UserRepository userRepository){
-        this.userRepository = userRepository;
     }
 
     public PermissionRepository getPermissionRepository(){
@@ -52,7 +36,6 @@ public class RoleWithPermissionsFacade {
 
     public void saveRoleWithPermissions(RoleWithPermissions roleWithPermissions){
         if (roleRepository == null || permissionRepository == null){
-            //TODO: obsługa wyjątków
             return;
         }
 
