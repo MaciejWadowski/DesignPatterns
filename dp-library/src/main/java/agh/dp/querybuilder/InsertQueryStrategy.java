@@ -7,12 +7,11 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class InsertQueryStrategy implements QueryStrategy {
+public class InsertQueryStrategy extends QueryJoinedOperations implements QueryStrategy {
 
     private String getTableNameForInsert(String  startingQuery){
         String tableName;
         int start, end;
-
         StringBuilder builder = new StringBuilder(startingQuery);
         Pattern intoPattern = Pattern.compile("into", Pattern.CASE_INSENSITIVE);
         Matcher intoMatcher = intoPattern.matcher(builder);
@@ -46,13 +45,13 @@ public class InsertQueryStrategy implements QueryStrategy {
         return officialTableNames;
     }
 
-//
-//    public static void main(String[] args) {
-//        String s = "INSERT INTO table_name (column1, column2, column3, ...) VALUES (value1, value2, value3, ...); ";
-//        InsertQueryStrategy queryBuilder = new InsertQueryStrategy();
-//        Permission permission = new Permission("table_name", PermissionsProvider.INSERT, (long)1, (long)1);
-//        String s2 = queryBuilder.buildQuery(s, Collections.singletonList(permission));
-//        System.out.println(s2);
-//    }
+
+    public static void main(String[] args) {
+        String s = "INSERT INTO table_name (column1, column2, column3, ...) VALUES (value1, value2, value3, ...); ";
+        InsertQueryStrategy queryBuilder = new InsertQueryStrategy();
+        Permission permission = new Permission("table_name", PermissionsProvider.INSERT, (long)1, (long)1);
+        String s2 = queryBuilder.buildQuery(s, Collections.singletonList(permission));
+        System.out.println(s2);
+    }
 
 }

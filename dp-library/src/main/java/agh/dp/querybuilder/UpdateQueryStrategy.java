@@ -11,19 +11,13 @@ import java.util.regex.Pattern;
 
 public class UpdateQueryStrategy extends QueryJoinedOperations implements QueryStrategy {
 
-    protected List<String> getTableNames(String startingQuery){
+    public List<String> getTableNamesFromQuery(String startingQuery){
         List<String> names = new ArrayList<>();
         StringBuilder builder = new StringBuilder(startingQuery);
         Pattern fromPattern = Pattern.compile("(update)", Pattern.CASE_INSENSITIVE);
         Pattern endingOfTableNames = Pattern.compile("(set)", Pattern.CASE_INSENSITIVE);
         return getStrings(names, builder, fromPattern, endingOfTableNames);
     }
-
-    public List<String> getTableNamesFromQuery(String query){
-        List<String> tableNames = getTableNames(query);
-        return tableNames;
-    }
-
 
     public static void main(String[] args) {
         String s = "update Student set FIRSTNAME=?, LASTNAME=? where id=?";

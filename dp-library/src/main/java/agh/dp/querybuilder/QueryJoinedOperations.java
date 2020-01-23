@@ -44,11 +44,11 @@ public abstract class QueryJoinedOperations implements QueryStrategy{
         builder.delete(builder.length()-4, builder.length());
     }
 
-    abstract  List<String> getTableNames(String startingQuery);
+    public abstract  List<String> getTableNamesFromQuery(String startingQuery);
 
     public String buildQuery(String startingQuery, List<Permission> permissions){
         StringBuilder builder = new StringBuilder(startingQuery);
-        List<String> tableNames = getTableNames(startingQuery);
+        List<String> tableNames = getTableNamesFromQuery(startingQuery);
         Pattern wherePattern = Pattern.compile("where", Pattern.CASE_INSENSITIVE);
         Matcher whereMatcher = wherePattern.matcher(builder);
 
