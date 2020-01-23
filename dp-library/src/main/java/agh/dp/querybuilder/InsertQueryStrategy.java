@@ -1,9 +1,9 @@
 package agh.dp.querybuilder;
 
 import agh.dp.models.Permission;
-import agh.dp.providers.PermissionsProvider;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,14 +43,4 @@ public class InsertQueryStrategy extends QueryJoinedOperations implements QueryS
         officialTableNames.add(tableName);
         return officialTableNames;
     }
-
-
-    public static void main(String[] args) {
-        String s = "INSERT INTO table_name (column1, column2, column3, ...) VALUES (value1, value2, value3, ...); ";
-        InsertQueryStrategy queryBuilder = new InsertQueryStrategy();
-        Permission permission = new Permission("table_name", PermissionsProvider.INSERT, (long)1, (long)1);
-        String s2 = queryBuilder.buildQuery(s, Collections.singletonList(permission));
-        System.out.println(s2);
-    }
-
 }

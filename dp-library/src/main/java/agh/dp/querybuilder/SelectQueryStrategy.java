@@ -1,7 +1,6 @@
 package agh.dp.querybuilder;
 
 import agh.dp.models.Permission;
-import agh.dp.providers.PermissionsProvider;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -135,14 +134,4 @@ public class SelectQueryStrategy implements  QueryStrategy{
         }
         return officialTableNames;
     }
-
-    public static void main(String[] args) {
-        String s = "select student0_.id as id1_0_, student0_.FIRSTNAME as FIRSTNAM2_0_, student0_.LASTNAME as LASTNAME3_0_ from Student student0_";
-        String s1 = "select student0_.id as id1_0_0_, student0_.FIRSTNAME as FIRSTNAM2_0_0_, student0_.LASTNAME as LASTNAME3_0_0_ from Student student0_ where student0_.id=?";
-        SelectQueryStrategy queryBuilder = new SelectQueryStrategy();
-        Permission permission = new Permission("Student", PermissionsProvider.READ, (long)1, (long)1);
-        String s2 = queryBuilder.buildQuery(s1, Collections.singletonList(permission));
-        System.out.println(s2);
-    }
-
 }

@@ -17,8 +17,12 @@ public abstract class QueryJoinedOperations implements QueryStrategy{
         String name;
         matcher1.find();
         start = matcher1.end()+1;
-        whereMatcher.find();
-        end = whereMatcher.start();
+        if(whereMatcher.find()){
+            end = whereMatcher.start();
+        }
+        else {
+            end = builder.length();
+        }
         name = builder.substring(start,end);
         name = name.trim();
         String[] splitted = name.split(" ");
