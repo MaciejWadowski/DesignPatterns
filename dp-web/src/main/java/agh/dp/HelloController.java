@@ -10,6 +10,7 @@ import agh.dp.models.User;
 import agh.dp.providers.PermissionsProvider;
 import agh.dp.utils.HibernateUtil;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -38,8 +39,9 @@ public class HelloController {
     @GetMapping(value = {"hello", "/hello", "hello.html"})
     public String bugHandler() {
         RoleWithPermissions roleWithPermissions = new RoleWithPermissions.RoleWithPermissionsBuilder("nazwa")
-                .addPermissions("Student", PermissionsProvider.READ, 1,2,3,4)
+                .addPermissions("Student", PermissionsProvider.READ, 2,3,4)
                 .addPermissions("Student", PermissionsProvider.UPDATE, 3)
+                .addPermissions("Student", PermissionsProvider.DELETE, 3)
                 .build();
         facade.saveRoleWithPermissions(roleWithPermissions);
         Iterable<Role> roles = facade.getRoleRepository().findAll();
@@ -54,13 +56,14 @@ public class HelloController {
         //tr.commit();
         //System.out.println("student saved");
         Student sampleStudent = session.get(Student.class, 1L);
-        sampleStudent.setFirstName("Agacia");
-        org.hibernate.Transaction tr = session.beginTransaction();
-        session.update(sampleStudent);
-        tr.commit();
         Student sampleStudent2 = session.get(Student.class, 3L);
         sampleStudent2.setFirstName("Agacia");
+        Transaction tr = session.beginTransaction();
         session.update(sampleStudent2);
+        tr.commit();
+        tr = session.beginTransaction();
+        session.delete(sampleStudent2);
+        tr.commit();
         //List<Student> allStudents = HibernateUtil.loadAllData(Student.class, session);
         return "hello";
     }

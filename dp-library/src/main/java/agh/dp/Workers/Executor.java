@@ -36,16 +36,16 @@ public class Executor {
         return usersPermissions;
     }
 
-    public boolean hasUserInsertPermission(String username, String tableName){
-        List<Long> userRoleIds = userRoleIds(username);
-
-        PermissionServiceMap permissionServiceMap = new PermissionServiceMap(permissionRepository);
-
-        List<Permission> usersPermissions = permissionServiceMap.findAllByRoleIdsAndTableNameAndAccessLevel(userRoleIds, tableName,PermissionsProvider.INSERT);
-        if (!usersPermissions.isEmpty()){
-            return true;
-        } else return false;
-    }
+//    public boolean hasUserInsertPermission(String username, String tableName){
+//        List<Long> userRoleIds = userRoleIds(username);
+//
+//        PermissionServiceMap permissionServiceMap = new PermissionServiceMap(permissionRepository);
+//
+//        List<Permission> usersPermissions = permissionServiceMap.findAllByRoleIdsAndTableNameAndAccessLevel(userRoleIds, tableName,PermissionsProvider.INSERT);
+//        if (!usersPermissions.isEmpty()){
+//            return true;
+//        } else return false;
+//    }
 
     private List<Long> userRoleIds(String userName){
         UserServiceMap userServiceMap = new UserServiceMap(userRepository);

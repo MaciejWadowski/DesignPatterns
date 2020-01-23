@@ -3,7 +3,7 @@ package agh.dp;
 import agh.dp.Workers.Executor;
 import agh.dp.models.Permission;
 import agh.dp.providers.PermissionsProvider;
-import agh.dp.querybuilder.QueryBuilder;
+import agh.dp.querybuilder.*;
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -12,7 +12,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Logging extends EmptyInterceptor {
 
@@ -24,6 +25,18 @@ public class Logging extends EmptyInterceptor {
     }
 
     // Define a static logger
+    private int getAccessLevelOfOperation(String query){
+        if (query.toLowerCase().contains("insert")){
+            return PermissionsProvider.INSERT;
+        } else if (query.toLowerCase().contains("select")){
+            return PermissionsProvider.READ;
+        } else if (query.toLowerCase().contains("delete")){
+            return PermissionsProvider.DELETE;
+        } else if (query.toLowerCase().contains("update")){
+            return PermissionsProvider.UPDATE;
+        }
+        return 0;
+    }
 
     @Override
     public boolean onSave(
@@ -43,21 +56,27 @@ public class Logging extends EmptyInterceptor {
         String restrictedSql = sql;
         List<String> tableNames = new ArrayList<>();
 
-        QueryBuilder queryBuilder = new QueryBuilder();
-        int accessNeededForOperation = queryBuilder.getAccessLevelOfOperation(sql);
+        QueryStrategy queryStrategy;
+        int accessNeededForOperation = getAccessLevelOfOperation(sql);
         if (accessNeededForOperation == PermissionsProvider.INSERT){
-            String tableName = queryBuilder.getTableNameForInsert(sql);
-            if (!executor.hasUserInsertPermission(getCurrentUsername(), tableName)){
-                //this.session.cancelQuery();
-                //restrictedSql = "SELECT 5";
-            }
-        } else {
-            tableNames = queryBuilder.getTableNamesFromQuery(sql);
-            List<Permission> permissions = executor.getUserPermissions(getCurrentUsername(),
-                    tableNames,
-                    accessNeededForOperation);
-            restrictedSql = queryBuilder.buildQuery(sql, permissions);
+            queryStrategy = new InsertQueryStrategy();
+
         }
+        else if (accessNeededForOperation == PermissionsProvider.DELETE){
+            queryStrategy = new DeleteQueryStrategy();
+        }
+        else if (accessNeededForOperation == PermissionsProvider.UPDATE) {
+            queryStrategy = new UpdateQueryStrategy();
+        }
+        else {
+            queryStrategy = new SelectQueryStrategy();
+        }
+        tableNames = queryStrategy.getTableNamesFromQuery(sql);
+        List<Permission> permissions = executor.getUserPermissions(getCurrentUsername(),
+                tableNames,
+                accessNeededForOperation);
+
+        restrictedSql = queryStrategy.buildQuery(sql, permissions);
         return super.onPrepareStatement(restrictedSql);
     }
 
