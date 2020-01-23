@@ -56,52 +56,51 @@ public class HelloController {
         Iterable<Role> roles = facade.getRoleRepository().findAll();
         Iterable<Permission> permissions = facade.getPermissionRepository().findAll();
         facade.assignUserToRole(getCurrentUsername(), roleWithPermissions);
-        Iterable<User> users = facade.getUserRepository().findAll();
-
-        Transaction save = session.beginTransaction();
-        session.save(new Student("maciek", "jakis"));
-        save.commit();
-        Student sampleStudent = session.get(Student.class, 1L);
-        Student sampleStudent2 = session.get(Student.class, 3L);
-        sampleStudent2.setFirstName("Agacia");
-        Transaction tr = session.beginTransaction();
-        session.update(sampleStudent2);
-        tr.commit();
-        tr = session.beginTransaction();
-        session.delete(sampleStudent2);
-        tr.commit();
-        List<Student> allStudents = HibernateUtil.loadAllData(Student.class, session);
         return "hello";
     }
 
     @PostMapping(value="/hello")
-    public String onClickAction(HttpServletRequest request) {
+    public ModelAndView onClickAction(HttpServletRequest request) {
         String buttonClicked = request.getParameter("button");
         String id = request.getParameter("id");
         String name = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
         System.out.println("id = " + id + ";name = " + name + ";lastName = " + lastName);
+        Student student = null;
         if (buttonClicked != null) {
             if (buttonClicked.equals("addStudent")) {
                 org.hibernate.Transaction tr = session.beginTransaction();
-                session.save(new Student(Long.parseLong(id), name, lastName));
+                student = new Student(Long.parseLong(id), name, lastName);
+                Long longs = (Long) session.save(student);
+                session.evict(student);
                 tr.commit();
             } else if (buttonClicked.equals("removeStudent")) {
                 org.hibernate.Transaction tr = session.beginTransaction();
-                Student student =  session.load(Student.class, Long.parseLong(id));
+                student =  session.get(Student.class, Long.parseLong(id));
+                if (student == null) {
+                    student = new Student(Long.parseLong(id), null, null);
+                }
+                System.out.println(student);
                 session.delete(student);
                 tr.commit();
             } else if (buttonClicked.equals("updateStudent")) {
                 //TODO trza naprawic
                 org.hibernate.Transaction tr = session.beginTransaction();
-                session.update(new Student(Long.parseLong(id), name, lastName));
+                student = session.load(Student.class, Long.parseLong(id));
+                if (student == null) {
+                    student = new Student(Long.parseLong(id), name, lastName);
+                }
+                student.setFirstName(name);
+                student.setLastName(lastName);
+                session.update(student);
                 tr.commit();
             } else {
-
-                session.get(Student.class, Long.parseLong(id));
+               student = session.get(Student.class, Long.parseLong(id));
             }
         }
-        return "hello";
+        ModelAndView model = new ModelAndView("hello");
+        model.addObject("result", student);
+        return model;
     }
 
     private String getCurrentUsername(){

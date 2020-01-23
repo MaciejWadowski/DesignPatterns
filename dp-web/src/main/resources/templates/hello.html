@@ -19,5 +19,6 @@
     <button type="submit" name="button" th:value="updateStudent" th:text = "updateStudent"></button>
     <button type="submit" name="button" th:value="showStudent" th:text = "showStudent"></button>
 </form>
+<div th:if="${result != null}" th:text="${result.toString()}">Result displayed here</div>
 </body>
 </html>
