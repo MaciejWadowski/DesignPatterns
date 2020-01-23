@@ -42,6 +42,7 @@ public class HelloController {
                 .addPermissions("Student", PermissionsProvider.READ, 2,3,4)
                 .addPermissions("Student", PermissionsProvider.UPDATE, 3)
                 .addPermissions("Student", PermissionsProvider.DELETE, 3)
+                .addInsertPermissions("Student")
                 .build();
         facade.saveRoleWithPermissions(roleWithPermissions);
         Iterable<Role> roles = facade.getRoleRepository().findAll();
@@ -50,7 +51,9 @@ public class HelloController {
         Iterable<User> users = facade.getUserRepository().findAll();
 
         //org.hibernate.Transaction tr = session.beginTransaction();
-//        session.save(new Student("maciek", "jakis"));
+        Transaction save = session.beginTransaction();
+        session.save(new Student("maciek", "jakis"));
+        save.commit();
 //        session.save(new Student("maciek2", "jakis2"));
 //        session.save(new Student("maciek3", "jakis3"));
         //tr.commit();

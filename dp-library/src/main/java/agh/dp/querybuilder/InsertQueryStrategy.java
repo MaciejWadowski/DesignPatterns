@@ -32,11 +32,10 @@ public class InsertQueryStrategy implements QueryStrategy {
 
     public String buildQuery(String startingQuery, List<Permission> permissions){
         StringBuilder builder = new StringBuilder(startingQuery);
-        String tableName = getTableNameForInsert(startingQuery);
-        if (permissions.get(0).getAccessLevel() == PermissionsProvider.INSERT){
+        if (!permissions.isEmpty()){
             return builder.toString();
         }
-        return "";
+        return null;
     }
 
     public List<String> getTableNamesFromQuery(String query){

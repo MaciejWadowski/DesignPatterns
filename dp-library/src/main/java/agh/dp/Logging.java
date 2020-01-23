@@ -18,6 +18,7 @@ import java.util.List;
 public class Logging extends EmptyInterceptor {
 
     private static final long serialVersionUID = 1L;
+    private boolean rollbackFlag = false;
     Executor executor;
 
     public Logging(Executor executor) {
@@ -60,7 +61,6 @@ public class Logging extends EmptyInterceptor {
         int accessNeededForOperation = getAccessLevelOfOperation(sql);
         if (accessNeededForOperation == PermissionsProvider.INSERT){
             queryStrategy = new InsertQueryStrategy();
-
         }
         else if (accessNeededForOperation == PermissionsProvider.DELETE){
             queryStrategy = new DeleteQueryStrategy();
@@ -77,6 +77,10 @@ public class Logging extends EmptyInterceptor {
                 accessNeededForOperation);
 
         restrictedSql = queryStrategy.buildQuery(sql, permissions);
+        if (restrictedSql == null){
+            rollbackFlag = true;
+            return super.onPrepareStatement(sql);
+        }
         return super.onPrepareStatement(restrictedSql);
     }
 
@@ -94,8 +98,10 @@ public class Logging extends EmptyInterceptor {
 
     @Override
     public void beforeTransactionCompletion(Transaction tx) {
-        tx.getStatus();
-        tx.rollback();
+        if (rollbackFlag) {
+            rollbackFlag = false;
+            tx.rollback();
+        }
     }
 
 
