@@ -19,12 +19,12 @@ public class DeleteQueryStrategy extends QueryJoinedOperations implements QueryS
     }
 
 
-    public static void main(String[] args) {
-        String s = "delete from Student where id=?";
-        DeleteQueryStrategy queryBuilder = new DeleteQueryStrategy();
-        Permission permission = new Permission("Student", PermissionsProvider.DELETE, (long)1, (long)1);
-        String s2 = queryBuilder.buildQuery(s, Collections.singletonList(permission));
-        System.out.println(s2);
-    }
+//    public static void main(String[] args) {
+//        String s = "delete from Student where id=?";
+//        DeleteQueryStrategy queryBuilder = new DeleteQueryStrategy();
+//        Permission permission = new Permission("Student", PermissionsProvider.DELETE, (long)1, (long)1);
+//        String s2 = queryBuilder.buildQuery(s, Collections.singletonList(permission));
+//        System.out.println(s2);
+//    }
 
 }

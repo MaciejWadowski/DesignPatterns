@@ -38,26 +38,29 @@ public class HelloController {
 
     @GetMapping(value = {"hello", "/hello", "hello.html"})
     public String bugHandler() {
-        RoleWithPermissions roleWithPermissions = new RoleWithPermissions.RoleWithPermissionsBuilder("nazwa")
-                .addPermissions("Student", PermissionsProvider.READ, 2,3,4)
-                .addPermissions("Student", PermissionsProvider.UPDATE, 3)
-                .addPermissions("Student", PermissionsProvider.DELETE, 3)
+        RoleWithPermissions roleWithPermissionsPrimary = new RoleWithPermissions.RoleWithPermissionsBuilder("dziedziczona")
                 .addInsertPermissions("Student")
+                .addPermissions("Student", PermissionsProvider.READ, 1,2,3)
+                .addPermissions("Student", PermissionsProvider.UPDATE, 1,4)
+                .addPermissions("Student", PermissionsProvider.DELETE, 3)
+                .build();
+        facade.saveRoleWithPermissions(roleWithPermissionsPrimary);
+
+        RoleWithPermissions roleWithPermissions = new RoleWithPermissions.RoleWithPermissionsBuilder("dziedzicząca")
+                .addPermissions("Student", PermissionsProvider.READ, 4)
+                .addPermissions("Student", PermissionsProvider.UPDATE, 3)
+                .setInheritedRole(roleWithPermissionsPrimary.getRole().getId())
                 .build();
         facade.saveRoleWithPermissions(roleWithPermissions);
+
         Iterable<Role> roles = facade.getRoleRepository().findAll();
         Iterable<Permission> permissions = facade.getPermissionRepository().findAll();
         facade.assignUserToRole(getCurrentUsername(), roleWithPermissions);
         Iterable<User> users = facade.getUserRepository().findAll();
 
-        //org.hibernate.Transaction tr = session.beginTransaction();
         Transaction save = session.beginTransaction();
         session.save(new Student("maciek", "jakis"));
         save.commit();
-//        session.save(new Student("maciek2", "jakis2"));
-//        session.save(new Student("maciek3", "jakis3"));
-        //tr.commit();
-        //System.out.println("student saved");
         Student sampleStudent = session.get(Student.class, 1L);
         Student sampleStudent2 = session.get(Student.class, 3L);
         sampleStudent2.setFirstName("Agacia");
@@ -67,7 +70,7 @@ public class HelloController {
         tr = session.beginTransaction();
         session.delete(sampleStudent2);
         tr.commit();
-        //List<Student> allStudents = HibernateUtil.loadAllData(Student.class, session);
+        List<Student> allStudents = HibernateUtil.loadAllData(Student.class, session);
         return "hello";
     }
 

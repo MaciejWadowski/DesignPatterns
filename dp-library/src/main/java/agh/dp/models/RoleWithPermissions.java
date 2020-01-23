@@ -52,8 +52,8 @@ public class RoleWithPermissions {
             this.role.setRoleName(roleName);
         }
 
-        public RoleWithPermissionsBuilder setInheritedRole(Long inheritedRoleName){
-            this.role.setInheritedRoleId(inheritedRoleName);
+        public RoleWithPermissionsBuilder setInheritedRole(Long inheritedRoleId){
+            this.role.setInheritedRoleId(inheritedRoleId);
             return this;
         }
 
