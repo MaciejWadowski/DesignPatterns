@@ -3,7 +3,7 @@ package agh.dp;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest(classes ={Logging.class})
+@SpringBootTest(classes ={Interceptor.class})
 class LibraryApplicationTests {
 
     @Test

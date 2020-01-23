@@ -60,7 +60,7 @@ public class Role {
         return inheritedRoleId;
     }
 
-    public void setInheritedRoleId(Long inheritedRoleName) {
-        this.inheritedRoleId = inheritedRoleName;
+    public void setInheritedRoleId(Long inheritedRoleId) {
+        this.inheritedRoleId = inheritedRoleId;
     }
 }
