@@ -90,7 +90,7 @@ public class HelloController {
                 updated =  db.update(student2);
             } else {
                student =  (Student) db.get(Student.class, Long.parseLong(id));
-               if (student != null) {
+               if (student.getId() != null) {
                    updated = true;
                }
             }

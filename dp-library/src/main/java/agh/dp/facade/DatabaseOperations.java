@@ -23,8 +23,8 @@ public class DatabaseOperations {
     public Boolean delete(Object object, Class clazz, Serializable key) {
         Boolean flag = true;
         //try {
+            Object o = session.load(clazz, key);
             org.hibernate.Transaction tr = session.beginTransaction();
-            Object o = session.get(clazz, key);
             if (o == null) {
                 o = object;
             }
