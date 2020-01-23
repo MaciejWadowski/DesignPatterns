@@ -79,7 +79,7 @@ public class HelloController {
                     updated = true;
                 }
             } else if (buttonClicked.equals("removeStudent")) {
-                updated = db.delete(new Student(Long.parseLong(id), null, null), Student.class, Long.parseLong(id));
+                    updated = db.delete(new Student(Long.parseLong(id), null, null), Student.class, Long.parseLong(id));
             } else if (buttonClicked.equals("updateStudent")) {
                 Student student2 = session.load(Student.class, Long.parseLong(id));
                 if (student2 == null) {

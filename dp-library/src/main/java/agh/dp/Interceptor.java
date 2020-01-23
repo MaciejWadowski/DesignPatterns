@@ -1,6 +1,7 @@
 package agh.dp;
 
 import agh.dp.Workers.Executor;
+import agh.dp.exceptions.UserPermissionException;
 import agh.dp.models.Permission;
 import agh.dp.providers.PermissionsProvider;
 import agh.dp.querybuilder.*;
