@@ -2,6 +2,7 @@ package agh.dp;
 
 import agh.dp.Workers.Executor;
 import agh.dp.database.UserRepository;
+import agh.dp.facade.DatabaseOperations;
 import agh.dp.facade.RoleWithPermissionsFacade;
 import agh.dp.models.Permission;
 import agh.dp.models.Role;
@@ -26,6 +27,7 @@ public class HelloController {
 
     private RoleWithPermissionsFacade facade;
     private Session session;
+    private DatabaseOperations db;
 
     public HelloController(RoleWithPermissionsFacade roleWithPermissionsFacade, Executor executor) {
         this.facade = roleWithPermissionsFacade;
@@ -34,6 +36,7 @@ public class HelloController {
                 .withOptions()
                 .interceptor(logging)
                 .openSession();
+        db = new DatabaseOperations(session);
     }
 
     @GetMapping(value = {"hello", "/hello", "hello.html"})
@@ -67,39 +70,35 @@ public class HelloController {
         String lastName = request.getParameter("lastName");
         System.out.println("id = " + id + ";name = " + name + ";lastName = " + lastName);
         Student student = null;
+        Boolean updated = true;
+        Long val = null;
         if (buttonClicked != null) {
             if (buttonClicked.equals("addStudent")) {
-                org.hibernate.Transaction tr = session.beginTransaction();
-                student = new Student(Long.parseLong(id), name, lastName);
-                Long longs = (Long) session.save(student);
-                session.evict(student);
-                tr.commit();
+                val = db.save(new Student(Long.parseLong(id), name, lastName));
+                if (val != null) {
+                    updated = true;
+                }
             } else if (buttonClicked.equals("removeStudent")) {
-                org.hibernate.Transaction tr = session.beginTransaction();
-                student =  session.get(Student.class, Long.parseLong(id));
-                if (student == null) {
-                    student = new Student(Long.parseLong(id), null, null);
-                }
-                System.out.println(student);
-                session.delete(student);
-                tr.commit();
+                updated = db.delete(new Student(Long.parseLong(id), null, null), Student.class, Long.parseLong(id));
             } else if (buttonClicked.equals("updateStudent")) {
-                //TODO trza naprawic
-                org.hibernate.Transaction tr = session.beginTransaction();
-                student = session.load(Student.class, Long.parseLong(id));
-                if (student == null) {
-                    student = new Student(Long.parseLong(id), name, lastName);
+                Student student2 = session.load(Student.class, Long.parseLong(id));
+                if (student2 == null) {
+                    student2 = new Student(Long.parseLong(id), name, lastName);
                 }
-                student.setFirstName(name);
-                student.setLastName(lastName);
-                session.update(student);
-                tr.commit();
+                student2.setLastName(lastName);
+                student2.setFirstName(name);
+                updated =  db.update(student2);
             } else {
-               student = session.get(Student.class, Long.parseLong(id));
+               student =  (Student) db.get(Student.class, Long.parseLong(id));
+               if (student != null) {
+                   updated = true;
+               }
             }
         }
         ModelAndView model = new ModelAndView("hello");
         model.addObject("result", student);
+        model.addObject("success", updated);
+        model.addObject("save", val);
         return model;
     }
 
