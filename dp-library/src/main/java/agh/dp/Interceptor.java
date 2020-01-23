@@ -15,13 +15,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Logging extends EmptyInterceptor {
+public class Interceptor extends EmptyInterceptor {
 
     private static final long serialVersionUID = 1L;
     private boolean rollbackFlag = false;
     Executor executor;
 
-    public Logging(Executor executor) {
+    public Interceptor(Executor executor) {
         this.executor = executor;
     }
 

@@ -1,17 +1,14 @@
 package agh.dp.database;
 
-import agh.dp.Logging;
-import agh.dp.facade.RoleWithPermissionsFacade;
+import agh.dp.Interceptor;
 import agh.dp.models.Permission;
 import agh.dp.models.Role;
 import agh.dp.models.RoleWithPermissions;
 import agh.dp.providers.PermissionsProvider;
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.util.*;
 
@@ -21,7 +18,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 //something doesn't work, please insert class names which you use
-@SpringBootTest(classes = {RoleRepository.class, Logging.class})
+@SpringBootTest(classes = {RoleRepository.class, Interceptor.class})
 class RoleRepositoryTest {
 
     @Mock

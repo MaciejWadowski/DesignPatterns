@@ -1,11 +1,9 @@
 package agh.dp.Workers;
 
 import agh.dp.database.*;
-import agh.dp.facade.RoleWithPermissionsFacade;
 import agh.dp.models.Permission;
 import agh.dp.models.Role;
 import agh.dp.models.User;
-import agh.dp.providers.PermissionsProvider;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -35,17 +33,6 @@ public class Executor {
         }
         return usersPermissions;
     }
-
-//    public boolean hasUserInsertPermission(String username, String tableName){
-//        List<Long> userRoleIds = userRoleIds(username);
-//
-//        PermissionServiceMap permissionServiceMap = new PermissionServiceMap(permissionRepository);
-//
-//        List<Permission> usersPermissions = permissionServiceMap.findAllByRoleIdsAndTableNameAndAccessLevel(userRoleIds, tableName,PermissionsProvider.INSERT);
-//        if (!usersPermissions.isEmpty()){
-//            return true;
-//        } else return false;
-//    }
 
     private List<Long> userRoleIds(String userName){
         UserServiceMap userServiceMap = new UserServiceMap(userRepository);
