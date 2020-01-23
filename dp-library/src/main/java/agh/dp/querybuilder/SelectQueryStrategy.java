@@ -11,7 +11,7 @@ public class SelectQueryStrategy implements  QueryStrategy{
     private List<String[]> getTableNames(String startingQuery){
         List<String[]> names = new ArrayList<>();
         StringBuilder builder = new StringBuilder(startingQuery);
-        Pattern fromPattern = Pattern.compile("(from)", Pattern.CASE_INSENSITIVE);
+        Pattern fromPattern = Pattern.compile("from", Pattern.CASE_INSENSITIVE);
         Pattern joinPattern = Pattern.compile("(left|right|outer)* ?join", Pattern.CASE_INSENSITIVE);
         Pattern endingOfTableNames = Pattern.compile("(where|order by)");
         Matcher matcher1 = fromPattern.matcher(builder);
@@ -22,7 +22,6 @@ public class SelectQueryStrategy implements  QueryStrategy{
 
         matcher1.find();
         start = matcher1.end()+1;
-
         joinEnd = start;
 
         while (true){
@@ -45,20 +44,22 @@ public class SelectQueryStrategy implements  QueryStrategy{
         int end;
         String name;
         String[] names2;
-        if (joinMatcher.find()) {
-            end = joinMatcher.start();
-        } else {
-            end = builder.length();
-        }
+        end = builder.length();
         name = builder.substring(start, end);
         name = name.trim();
         names2 = name.split(" ");
-        if (names2.length > 2) {
+        if (names2.length >+ 2) {
+            if (names2[1].equalsIgnoreCase("where") || names2[1].equalsIgnoreCase("order")){
+                names2[1] = names2[0];
+            }
             names2 = Arrays.copyOfRange(names2, 0, 2);
         }
         if (names2 != null) {
             if (names2.length < 2) {
-                names2[1] = names2[0];
+                    name = names2[0];
+                    names2 = new String[2];
+                    names2[1] = name;
+                    names2[0] = name;
             }
             names.add(names2);
         }
@@ -104,7 +105,9 @@ public class SelectQueryStrategy implements  QueryStrategy{
         if (flag){
             builder.append(order);
         }
-        return builder.toString();
+        String result = builder.toString();
+        result = result.replaceAll("( )+", " ");
+        return result;
     }
 
     private void makeConstraints(Map<String, List<Long>> permissions, StringBuilder builder, List<String[]> tableNames) {
@@ -112,7 +115,7 @@ public class SelectQueryStrategy implements  QueryStrategy{
         for (String[] tableName : tableNames) {
             perms = permissions.getOrDefault(tableName[0], null);
             if (perms == null) {
-                builder.append(tableName[1]).append(".ID == null AND ");
+                builder.append(tableName[1]).append(".ID == 0 AND ");
                 continue;
             }
             builder.append(tableName[1]).append(".ID IN (");

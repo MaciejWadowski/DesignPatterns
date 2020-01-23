@@ -73,6 +73,9 @@ public abstract class QueryJoinedOperations implements QueryStrategy{
             dataForConstraints.replace(permission.getTableName(), currentValue);
         }
         makeConstraints(dataForConstraints, builder, tableNames);
-        return builder.toString();
+
+        String result = builder.toString();
+        result = result.replaceAll("( )+", " ");
+        return result;
     }
 }
