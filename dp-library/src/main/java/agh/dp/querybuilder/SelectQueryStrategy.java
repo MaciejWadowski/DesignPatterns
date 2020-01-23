@@ -58,7 +58,7 @@ public class SelectQueryStrategy implements  QueryStrategy{
             names2 = Arrays.copyOfRange(names2, 0, 2);
         }
         if (names2 != null) {
-            if (names2.length <= 2) {
+            if (names2.length < 2) {
                 names2[1] = names2[0];
             }
             names.add(names2);
@@ -113,7 +113,7 @@ public class SelectQueryStrategy implements  QueryStrategy{
         for (String[] tableName : tableNames) {
             perms = permissions.getOrDefault(tableName[0], null);
             if (perms == null) {
-                builder.append(tableName[1]).append(".ID == 0 AND ");
+                builder.append(tableName[1]).append(".ID == null AND ");
                 continue;
             }
             builder.append(tableName[1]).append(".ID IN (");
@@ -141,7 +141,7 @@ public class SelectQueryStrategy implements  QueryStrategy{
         String s1 = "select student0_.id as id1_0_0_, student0_.FIRSTNAME as FIRSTNAM2_0_0_, student0_.LASTNAME as LASTNAME3_0_0_ from Student student0_ where student0_.id=?";
         SelectQueryStrategy queryBuilder = new SelectQueryStrategy();
         Permission permission = new Permission("Student", PermissionsProvider.READ, (long)1, (long)1);
-        String s2 = queryBuilder.buildQuery(s, Collections.singletonList(permission));
+        String s2 = queryBuilder.buildQuery(s1, Collections.singletonList(permission));
         System.out.println(s2);
     }
 
