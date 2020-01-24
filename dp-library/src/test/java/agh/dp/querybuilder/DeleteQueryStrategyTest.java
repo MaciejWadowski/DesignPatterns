@@ -45,5 +45,12 @@ public class DeleteQueryStrategyTest {
         Assert.assertThat(returnQuery, containsStringIgnoringCase("DELETE FROM table_name WHERE condition AND table_name.id IN (1, 2)"));
     }
 
-
+    @Test
+    public void buildQueryTest3(){
+        String query ="Delete from Student";
+        DeleteQueryStrategy deleteQueryStrategy = new DeleteQueryStrategy();
+        List<Permission> permissions = new ArrayList<>();
+        String returnQuery = deleteQueryStrategy.buildQuery(query, permissions);
+        Assert.assertThat(returnQuery, containsStringIgnoringCase("Delete from Student WHERE Student.id == 0"));
+    }
 }
