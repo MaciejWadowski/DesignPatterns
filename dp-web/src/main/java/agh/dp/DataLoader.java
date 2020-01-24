@@ -24,14 +24,14 @@ public class DataLoader implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         RoleWithPermissions roleWithPermissionsPrimary = new RoleWithPermissions.RoleWithPermissionsBuilder("dziedziczona")
-                .addInsertPermissions("Student")
                 .addPermissions("Student", PermissionsProvider.READ, 1)
-                .addPermissions("Student", PermissionsProvider.UPDATE, 1)
-                .addPermissions("Student", PermissionsProvider.DELETE, 1)
+                //.addPermissions("Student", PermissionsProvider.UPDATE, 1)
+                //.addPermissions("Student", PermissionsProvider.DELETE, 1)
                 .build();
         facade.saveRoleWithPermissions(roleWithPermissionsPrimary);
 
         RoleWithPermissions roleWithPermissions = new RoleWithPermissions.RoleWithPermissionsBuilder("dziedzicząca")
+                .addInsertPermissions("Student")
                 .addPermissions("Student", PermissionsProvider.READ, 2,3,4)
                 .addPermissions("Student", PermissionsProvider.UPDATE, 2,3,4)
                 .addPermissions("Student", PermissionsProvider.INSERT, 1,2)
