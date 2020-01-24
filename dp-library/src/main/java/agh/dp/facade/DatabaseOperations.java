@@ -16,17 +16,11 @@ public class DatabaseOperations {
     }
 
     public Long save(Object object) {
-        try{
         org.hibernate.Transaction tr = session.beginTransaction();
-        Long longs = (Long) session.save(object);
-        session.evict(object);
-        TransactionStatus status = tr.getStatus();
+        Long addedRecordId = (Long) session.save(object);
         tr.commit();
-        TransactionStatus status1 = tr.getStatus();
-        } catch (RuntimeException e){
-            return 0L;
-        }
-        return 1L;
+        if (session.contains(object)) return addedRecordId;
+        else return null;
     }
 
     public Boolean delete(Object object, Class clazz, Serializable key) {

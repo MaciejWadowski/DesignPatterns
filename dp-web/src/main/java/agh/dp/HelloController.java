@@ -49,7 +49,7 @@ public class HelloController {
         String lastName = request.getParameter("lastName");
         System.out.println("id = " + id + ";name = " + name + ";lastName = " + lastName);
         Student student = null;
-        Boolean updated = true;
+        Boolean updated = false;
         Long val = null;
         String error = "";
         if (buttonClicked != null) {
