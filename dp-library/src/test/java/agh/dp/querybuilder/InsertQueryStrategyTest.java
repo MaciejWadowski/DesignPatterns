@@ -42,4 +42,14 @@ public class InsertQueryStrategyTest {
         Assert.assertThat(returnQuery, containsStringIgnoringCase("INSERT INTO table_name (column1, column2, column3, ...) VALUES (value1, value2, value3, ...)"));
     }
 
+
+    @Test
+    public void buildQueryTest3(){
+        String query ="INSERT INTO table_name (column1, column2, column3, ...) VALUES (value1, value2, value3, ...)";
+        InsertQueryStrategy insertQueryStrategy = new InsertQueryStrategy();
+        List<Permission> permissions = new ArrayList<>();
+        String returnQuery = insertQueryStrategy.buildQuery(query, permissions);
+        Assert.assertThat(returnQuery, equalTo(null));
+    }
+
 }
