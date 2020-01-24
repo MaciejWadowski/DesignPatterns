@@ -52,6 +52,7 @@ public class DatabaseOperations {
         Object obj;
         try {
             obj = session.load(clazz, key);
+            String var = obj.toString();
         } catch (Exception e) {
             obj = null;
         }

@@ -22,7 +22,7 @@ public class RoleWithPermissions {
         return role.getRoleName();
     }
 
-    public Long getInheritedRoleName() {
+    public Long getInheritedRoleId() {
         return role.getInheritedRoleId();
     }
 

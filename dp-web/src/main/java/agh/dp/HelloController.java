@@ -80,12 +80,11 @@ public class HelloController {
                 updated = db.delete(new Student(Long.parseLong(id), null, null), Student.class, Long.parseLong(id));
             } else if (buttonClicked.equals("updateStudent")) {
                 Student student2 = (Student) db.load(Student.class, Long.parseLong(id));
-                if (student2 == null) {
-                    student2 = new Student(Long.parseLong(id), name, lastName);
-                }
-                student2.setLastName(lastName);
-                student2.setFirstName(name);
-                updated =  db.update(student2);
+                if (student2 != null) {
+                    student2.setLastName(lastName);
+                    student2.setFirstName(name);
+                    updated =  db.update(student2);
+                } else updated = false;
             } else {
                student =  (Student) db.get(Student.class, Long.parseLong(id));
                if (student != null) {

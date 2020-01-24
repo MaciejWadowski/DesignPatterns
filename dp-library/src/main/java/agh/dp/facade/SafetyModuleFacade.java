@@ -52,7 +52,6 @@ public class SafetyModuleFacade {
 
     public void saveRoleWithPermissions(RoleWithPermissions roleWithPermissions){
         if (roleRepository == null || permissionRepository == null){
-            //TODO: obsługa wyjątków
             return;
         }
 
