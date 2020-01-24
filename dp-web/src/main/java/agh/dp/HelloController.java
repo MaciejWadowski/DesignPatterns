@@ -24,39 +24,21 @@ public class HelloController {
     private SafetyModuleFacade facade;
     private Session session;
     private DatabaseOperations db;
+    private Executor executor;
 
     public HelloController(SafetyModuleFacade safetyModuleFacade, Executor executor) {
         this.facade = safetyModuleFacade;
-        Interceptor interceptor = new Interceptor(executor);
-        this.session = HibernateUtil.getSessionFactory("org.h2.Driver", "jdbc:h2:mem:testdb", "sa", "", User.class, Student.class)
-                .withOptions()
-                .interceptor(interceptor)
-                .openSession();
-        db = new DatabaseOperations(session);
+        this.executor = executor;
     }
 
     @GetMapping(value = {"hello", "/hello", "hello.html"})
     public String bugHandler() {
-//        RoleWithPermissions roleWithPermissionsPrimary = new RoleWithPermissions.RoleWithPermissionsBuilder("dziedziczona")
-//                .addInsertPermissions("Student")
-//                .addPermissions("Student", PermissionsProvider.READ, 1,2,3)
-//                .addPermissions("Student", PermissionsProvider.UPDATE, 1,4)
-//                .addPermissions("Student", PermissionsProvider.DELETE, 3)
-//                .build();
-//        facade.saveRoleWithPermissions(roleWithPermissionsPrimary);
-//
-//        RoleWithPermissions roleWithPermissions = new RoleWithPermissions.RoleWithPermissionsBuilder("dziedzicząca")
-//                .addPermissions("Student", PermissionsProvider.READ, 4)
-//                .addPermissions("Student", PermissionsProvider.UPDATE, 3)
-//                .setInheritedRole(roleWithPermissionsPrimary.getRole().getId())
-//                .build();
-//        facade.saveRoleWithPermissions(roleWithPermissions);
-//
-//        Iterable<Role> roles = facade.getRoleRepository().findAll();
-//        Iterable<Permission> permissions = facade.getPermissionRepository().findAll();
-//        if (getCurrentUsername().equals("user")) {
-//            facade.assignUserToRole(getCurrentUsername(), roleWithPermissions);
-//        }
+        Interceptor interceptor = new Interceptor(executor);
+        this.session = HibernateUtil.getSessionFactory("org.h2.Driver", "jdbc:h2:mem:testdb", "sa", "", Student.class)
+                .withOptions()
+                .interceptor(interceptor)
+                .openSession();
+        db = new DatabaseOperations(session);
         return "hello";
     }
 
@@ -85,11 +67,11 @@ public class HelloController {
                     student2.setFirstName(name);
                     updated =  db.update(student2);
                 } else updated = false;
-            } else {
-               student =  (Student) db.get(Student.class, Long.parseLong(id));
-               if (student != null) {
-                   updated = true;
-               }
+            } else if (buttonClicked.equals("showStudent")) {
+                student = (Student) db.get(Student.class, Long.parseLong(id));
+                if (student != null) {
+                    updated = true;
+                }
             }
         }
         ModelAndView model = new ModelAndView("hello");
