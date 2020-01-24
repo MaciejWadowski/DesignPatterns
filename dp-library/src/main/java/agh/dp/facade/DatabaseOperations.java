@@ -26,7 +26,8 @@ public class DatabaseOperations {
             org.hibernate.Transaction tr = session.beginTransaction();
             Object o = session.get(clazz, key);
             if (o == null) {
-                o = object;
+                tr.rollback();
+                return false;
             }
             session.delete(o);
             tr.commit();
