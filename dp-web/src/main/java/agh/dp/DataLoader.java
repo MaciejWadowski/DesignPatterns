@@ -34,7 +34,6 @@ public class DataLoader implements CommandLineRunner {
                 .addInsertPermissions("Student")
                 .addPermissions("Student", PermissionsProvider.READ, 2,3,4)
                 .addPermissions("Student", PermissionsProvider.UPDATE, 2,3,4)
-                .addPermissions("Student", PermissionsProvider.INSERT, 1,2)
                 .addPermissions("Student", PermissionsProvider.DELETE, 2,3)
                 .setInheritedRole(roleWithPermissionsPrimary.getRole().getId())
                 .build();
