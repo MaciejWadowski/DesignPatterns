@@ -49,7 +49,9 @@ public class SelectQueryStrategy implements  QueryStrategy{
         name = name.trim();
         names2 = name.split(" ");
         if (names2.length >+ 2) {
-            if (names2[1].equalsIgnoreCase("where") || names2[1].equalsIgnoreCase("order")){
+            Pattern invalidNames = Pattern.compile("(where|order|left|right|outer|join)", Pattern.CASE_INSENSITIVE);
+            Matcher invalidNameMatcher = invalidNames.matcher(names2[1]);
+            if (invalidNameMatcher.find()){
                 names2[1] = names2[0];
             }
             names2 = Arrays.copyOfRange(names2, 0, 2);

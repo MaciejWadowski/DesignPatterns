@@ -138,5 +138,26 @@ public class SelectQueryStrategyTest {
         String returnQuery = selectQueryStrategy.buildQuery(query, permissions);
         Assert.assertThat(returnQuery, containsStringIgnoringCase("SELECT * FROM tabela1 tab1 left JOIN tabela2 tab2 right JOIN tabela3 tab3 join tabela4 tab4 WHERE condition AND tab1.ID IN (1, 2) and tab2.ID IN (1, 2) and tab3.ID IN (1, 2) and tab4.ID == 0 order by something"));
     }
+
+    @Test
+    public void buildQueryTest7(){
+        String query ="SELECT * FROM tabela1 tab1 left JOIN tabela2 tab2 right JOIN tabela3 join tabela4 tab4 WHERE condition order by something";
+        SelectQueryStrategy selectQueryStrategy = new SelectQueryStrategy();
+        Permission permission = new Permission("tabela1", PermissionsProvider.INSERT, (long)1,(long)1);
+        Permission permission2 = new Permission("tabela1",PermissionsProvider.INSERT, (long)2,(long)1);
+        Permission permission3 = new Permission("tabela2", PermissionsProvider.INSERT, (long)1,(long)1);
+        Permission permission4 = new Permission("tabela2",PermissionsProvider.INSERT, (long)2,(long)1);
+        Permission permission5 = new Permission("tabela3", PermissionsProvider.INSERT, (long)1,(long)1);
+        Permission permission6 = new Permission("tabela3",PermissionsProvider.INSERT, (long)2,(long)1);
+        List<Permission> permissions = new ArrayList<>();
+        permissions.add(permission);
+        permissions.add(permission2);
+        permissions.add(permission3);
+        permissions.add(permission4);
+        permissions.add(permission5);
+        permissions.add(permission6);
+        String returnQuery = selectQueryStrategy.buildQuery(query, permissions);
+        Assert.assertThat(returnQuery, containsStringIgnoringCase("SELECT * FROM tabela1 tab1 left JOIN tabela2 tab2 right JOIN tabela3 join tabela4 tab4 WHERE condition AND tab1.ID IN (1, 2) and tab2.ID IN (1, 2) and tabela3.ID IN (1, 2) and tab4.ID == 0 order by something"));
+    }
 }
 
