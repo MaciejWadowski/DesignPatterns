@@ -56,8 +56,8 @@ public class SelectQueryStrategyTest {
     public void buildQueryTest1(){
         String query ="select student0_.id as id1_0_0_, student0_.FIRSTNAME as FIRSTNAM2_0_0_, student0_.LASTNAME as LASTNAME3_0_0_ from Student student0_ where student0_.id=?";
         SelectQueryStrategy selectQueryStrategy = new SelectQueryStrategy();
-        Permission permission = new Permission("Student", PermissionsProvider.INSERT, (long)1,(long)1);
-        Permission permission2 = new Permission("Student",PermissionsProvider.INSERT, (long)2,(long)1);
+        Permission permission = new Permission("Student", PermissionsProvider.READ, (long)1,(long)1);
+        Permission permission2 = new Permission("Student",PermissionsProvider.READ, (long)2,(long)1);
         List<Permission> permissions = new ArrayList<>();
         permissions.add(permission);
         permissions.add(permission2);
@@ -69,8 +69,8 @@ public class SelectQueryStrategyTest {
     public void buildQueryTest2(){
         String query ="SELECT * FROM Student";
         SelectQueryStrategy selectQueryStrategy = new SelectQueryStrategy();
-        Permission permission = new Permission("Student", PermissionsProvider.INSERT, (long)1,(long)1);
-        Permission permission2 = new Permission("Student",PermissionsProvider.INSERT, (long)2,(long)1);
+        Permission permission = new Permission("Student", PermissionsProvider.READ, (long)1,(long)1);
+        Permission permission2 = new Permission("Student",PermissionsProvider.READ, (long)2,(long)1);
         List<Permission> permissions = new ArrayList<>();
         permissions.add(permission);
         permissions.add(permission2);
@@ -82,8 +82,8 @@ public class SelectQueryStrategyTest {
     public void buildQueryTest3(){
         String query ="SELECT * FROM Student student where condition";
         SelectQueryStrategy selectQueryStrategy = new SelectQueryStrategy();
-        Permission permission = new Permission("Student", PermissionsProvider.INSERT, (long)1,(long)1);
-        Permission permission2 = new Permission("Student",PermissionsProvider.INSERT, (long)2,(long)1);
+        Permission permission = new Permission("Student", PermissionsProvider.READ, (long)1,(long)1);
+        Permission permission2 = new Permission("Student",PermissionsProvider.READ, (long)2,(long)1);
         List<Permission> permissions = new ArrayList<>();
         permissions.add(permission);
         permissions.add(permission2);
@@ -95,8 +95,8 @@ public class SelectQueryStrategyTest {
     public void buildQueryTest4(){
         String query ="SELECT * FROM Student where condition";
         SelectQueryStrategy selectQueryStrategy = new SelectQueryStrategy();
-        Permission permission = new Permission("Student", PermissionsProvider.INSERT, (long)1,(long)1);
-        Permission permission2 = new Permission("Student",PermissionsProvider.INSERT, (long)2,(long)1);
+        Permission permission = new Permission("Student", PermissionsProvider.READ, (long)1,(long)1);
+        Permission permission2 = new Permission("Student",PermissionsProvider.READ, (long)2,(long)1);
         List<Permission> permissions = new ArrayList<>();
         permissions.add(permission);
         permissions.add(permission2);
@@ -108,8 +108,8 @@ public class SelectQueryStrategyTest {
     public void buildQueryTest5(){
         String query ="SELECT * FROM Student order by something";
         SelectQueryStrategy selectQueryStrategy = new SelectQueryStrategy();
-        Permission permission = new Permission("Student", PermissionsProvider.INSERT, (long)1,(long)1);
-        Permission permission2 = new Permission("Student",PermissionsProvider.INSERT, (long)2,(long)1);
+        Permission permission = new Permission("Student", PermissionsProvider.READ, (long)1,(long)1);
+        Permission permission2 = new Permission("Student",PermissionsProvider.READ, (long)2,(long)1);
         List<Permission> permissions = new ArrayList<>();
         permissions.add(permission);
         permissions.add(permission2);
@@ -122,12 +122,12 @@ public class SelectQueryStrategyTest {
     public void buildQueryTest6(){
         String query ="SELECT * FROM tabela1 tab1 left JOIN tabela2 tab2 right JOIN tabela3 tab3 join tabela4 tab4 WHERE condition order by something";
         SelectQueryStrategy selectQueryStrategy = new SelectQueryStrategy();
-        Permission permission = new Permission("tabela1", PermissionsProvider.INSERT, (long)1,(long)1);
-        Permission permission2 = new Permission("tabela1",PermissionsProvider.INSERT, (long)2,(long)1);
-        Permission permission3 = new Permission("tabela2", PermissionsProvider.INSERT, (long)1,(long)1);
-        Permission permission4 = new Permission("tabela2",PermissionsProvider.INSERT, (long)2,(long)1);
-        Permission permission5 = new Permission("tabela3", PermissionsProvider.INSERT, (long)1,(long)1);
-        Permission permission6 = new Permission("tabela3",PermissionsProvider.INSERT, (long)2,(long)1);
+        Permission permission = new Permission("tabela1", PermissionsProvider.READ, (long)1,(long)1);
+        Permission permission2 = new Permission("tabela1",PermissionsProvider.READ, (long)2,(long)1);
+        Permission permission3 = new Permission("tabela2", PermissionsProvider.READ, (long)1,(long)1);
+        Permission permission4 = new Permission("tabela2",PermissionsProvider.READ, (long)2,(long)1);
+        Permission permission5 = new Permission("tabela3", PermissionsProvider.READ, (long)1,(long)1);
+        Permission permission6 = new Permission("tabela3",PermissionsProvider.READ, (long)2,(long)1);
         List<Permission> permissions = new ArrayList<>();
         permissions.add(permission);
         permissions.add(permission2);
@@ -143,12 +143,12 @@ public class SelectQueryStrategyTest {
     public void buildQueryTest7(){
         String query ="SELECT * FROM tabela1 tab1 left JOIN tabela2 tab2 right JOIN tabela3 join tabela4 tab4 WHERE condition order by something";
         SelectQueryStrategy selectQueryStrategy = new SelectQueryStrategy();
-        Permission permission = new Permission("tabela1", PermissionsProvider.INSERT, (long)1,(long)1);
-        Permission permission2 = new Permission("tabela1",PermissionsProvider.INSERT, (long)2,(long)1);
-        Permission permission3 = new Permission("tabela2", PermissionsProvider.INSERT, (long)1,(long)1);
-        Permission permission4 = new Permission("tabela2",PermissionsProvider.INSERT, (long)2,(long)1);
-        Permission permission5 = new Permission("tabela3", PermissionsProvider.INSERT, (long)1,(long)1);
-        Permission permission6 = new Permission("tabela3",PermissionsProvider.INSERT, (long)2,(long)1);
+        Permission permission = new Permission("tabela1", PermissionsProvider.READ, (long)1,(long)1);
+        Permission permission2 = new Permission("tabela1",PermissionsProvider.READ, (long)2,(long)1);
+        Permission permission3 = new Permission("tabela2", PermissionsProvider.READ, (long)1,(long)1);
+        Permission permission4 = new Permission("tabela2",PermissionsProvider.READ, (long)2,(long)1);
+        Permission permission5 = new Permission("tabela3", PermissionsProvider.READ, (long)1,(long)1);
+        Permission permission6 = new Permission("tabela3",PermissionsProvider.READ, (long)2,(long)1);
         List<Permission> permissions = new ArrayList<>();
         permissions.add(permission);
         permissions.add(permission2);
