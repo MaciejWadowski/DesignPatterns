@@ -20,8 +20,8 @@ public class DeleteQueryStrategyTest {
     }
 
     @Test
-    public void buildQueryTest(){
-        String query ="Delete * from Student";
+    public void buildQueryTest1(){
+        String query ="Delete from Student";
         DeleteQueryStrategy deleteQueryStrategy = new DeleteQueryStrategy();
         Permission permission = new Permission("Student", PermissionsProvider.DELETE, (long)1,(long)1);
         Permission permission2 = new Permission("Student",PermissionsProvider.DELETE, (long)2,(long)1);
@@ -29,6 +29,21 @@ public class DeleteQueryStrategyTest {
         permissions.add(permission);
         permissions.add(permission2);
         String returnQuery = deleteQueryStrategy.buildQuery(query, permissions);
-        Assert.assertThat(returnQuery, containsStringIgnoringCase("Delete * from Student WHERE Student.id IN (1, 2)"));
+        Assert.assertThat(returnQuery, containsStringIgnoringCase("Delete from Student WHERE Student.id IN (1, 2)"));
     }
+
+    @Test
+    public void buildQueryTest2(){
+        String query ="DELETE FROM table_name WHERE condition";
+        DeleteQueryStrategy deleteQueryStrategy = new DeleteQueryStrategy();
+        Permission permission = new Permission("table_name", PermissionsProvider.DELETE, (long)1,(long)1);
+        Permission permission2 = new Permission("table_name",PermissionsProvider.DELETE, (long)2,(long)1);
+        List<Permission> permissions = new ArrayList<>();
+        permissions.add(permission);
+        permissions.add(permission2);
+        String returnQuery = deleteQueryStrategy.buildQuery(query, permissions);
+        Assert.assertThat(returnQuery, containsStringIgnoringCase("DELETE FROM table_name WHERE condition AND table_name.id IN (1, 2)"));
+    }
+
+
 }

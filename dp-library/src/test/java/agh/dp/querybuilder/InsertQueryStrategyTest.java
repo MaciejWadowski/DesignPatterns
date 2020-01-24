@@ -21,7 +21,7 @@ public class InsertQueryStrategyTest {
     }
 
     @Test
-    public void buildQueryTest(){
+    public void buildQueryTest1(){
         String query ="Insert into Student values (dane1, dane2, dane3)";
         InsertQueryStrategy insertQueryStrategy = new InsertQueryStrategy();
         Permission permission = new Permission("Student", PermissionsProvider.INSERT, (long)1,(long)1);
@@ -32,4 +32,18 @@ public class InsertQueryStrategyTest {
         String returnQuery = insertQueryStrategy.buildQuery(query, permissions);
         Assert.assertThat(returnQuery, containsStringIgnoringCase("Insert into Student values (dane1, dane2, dane3)"));
     }
+
+    @Test
+    public void buildQueryTest2(){
+        String query ="INSERT INTO table_name (column1, column2, column3, ...) VALUES (value1, value2, value3, ...)";
+        InsertQueryStrategy insertQueryStrategy = new InsertQueryStrategy();
+        Permission permission = new Permission("table_name", PermissionsProvider.INSERT, (long)1,(long)1);
+        Permission permission2 = new Permission("table_name",PermissionsProvider.INSERT, (long)2,(long)1);
+        List<Permission> permissions = new ArrayList<>();
+        permissions.add(permission);
+        permissions.add(permission2);
+        String returnQuery = insertQueryStrategy.buildQuery(query, permissions);
+        Assert.assertThat(returnQuery, containsStringIgnoringCase("INSERT INTO table_name (column1, column2, column3, ...) VALUES (value1, value2, value3, ...)"));
+    }
+
 }

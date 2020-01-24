@@ -45,6 +45,7 @@ class RoleTests {
     UserRepository userRepository;
     @Mock
     PermissionRepository permissionRepository;
+    @Mock
     RoleRepository roleRepository;
 
 
@@ -54,7 +55,7 @@ class RoleTests {
     }
 
     @Test
-    public void testSomething(){
+    public void testCreatingRolesWithPermissions(){
         RoleWithPermissions roleWithPermissionsPrimary = new RoleWithPermissions.RoleWithPermissionsBuilder("dziedziczona")
                 .addInsertPermissions("Student")
                 .addPermissions("Student", PermissionsProvider.READ, 1,2,3)
@@ -62,6 +63,7 @@ class RoleTests {
                 .addPermissions("Student", PermissionsProvider.DELETE, 3)
                 .build();
         roleWithPermissionsPrimary.getRole().setId((long) 1);
+
         when(roleRepository.save(any())).thenReturn(roleWithPermissionsPrimary.getRole());
 
         facade.saveRoleWithPermissions(roleWithPermissionsPrimary);
@@ -79,7 +81,11 @@ class RoleTests {
         facade.assignUserToRole("user1",roleWithPermissions);
         facade.assignUserToRole("user2Primary",roleWithPermissionsPrimary);
 
-        //assert
+        assertTrue(roleWithPermissionsPrimary.getRoleName().equals("dziedziczona"));
+        assertEquals("dziedzicząca", roleWithPermissions.getRoleName());
+        assertEquals(roleWithPermissions.getInheritedRoleId(), roleWithPermissionsPrimary.getRole().getId());
+        //assertOtherThings?
+        roleRepository.findAll();
     }
 
 }
