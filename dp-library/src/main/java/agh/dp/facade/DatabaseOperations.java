@@ -1,23 +1,32 @@
 package agh.dp.facade;
 
 import org.hibernate.Session;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 
+import javax.transaction.TransactionScoped;
 import java.io.Serializable;
 
 public class DatabaseOperations {
 
     private final Session session;
 
+
     public DatabaseOperations(Session session) {
         this.session = session;
     }
 
     public Long save(Object object) {
+        try{
         org.hibernate.Transaction tr = session.beginTransaction();
         Long longs = (Long) session.save(object);
         session.evict(object);
+        TransactionStatus status = tr.getStatus();
         tr.commit();
-        return longs;
+        TransactionStatus status1 = tr.getStatus();
+        } catch (RuntimeException e){
+            return 0L;
+        }
+        return 1L;
     }
 
     public Boolean delete(Object object, Class clazz, Serializable key) {
@@ -53,7 +62,7 @@ public class DatabaseOperations {
         Object obj;
         try {
             obj = session.load(clazz, key);
-            String var = obj.toString();
+            obj.toString();
         } catch (Exception e) {
             obj = null;
         }

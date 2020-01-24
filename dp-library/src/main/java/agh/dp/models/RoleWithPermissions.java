@@ -68,6 +68,7 @@ public class RoleWithPermissions {
         }
 
         public RoleWithPermissionsBuilder addPermissions(String tableName, Integer accessLevel, Integer ... recordIds){
+            if (accessLevel == PermissionsProvider.INSERT) return this;
             for (Integer id : recordIds){
                 Long longId = (long) id;
                 Permission permission = new Permission(tableName, accessLevel, longId);
