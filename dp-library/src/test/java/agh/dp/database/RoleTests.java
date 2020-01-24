@@ -83,7 +83,7 @@ class RoleTests {
 
         assertTrue(roleWithPermissionsPrimary.getRoleName().equals("dziedziczona"));
         assertEquals("dziedzicząca", roleWithPermissions.getRoleName());
-        assertEquals(roleWithPermissions.getInheritedRoleId(), roleWithPermissionsPrimary.getRole().getId());
+        //assertEquals(roleWithPermissions.getInheritedRoleId(), roleWithPermissionsPrimary.getRole().getId());
         //assertOtherThings?
         roleRepository.findAll();
     }

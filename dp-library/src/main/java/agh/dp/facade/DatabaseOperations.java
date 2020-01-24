@@ -48,7 +48,15 @@ public class DatabaseOperations {
         return flag;
     }
 
-
+    public Object load(Class clazz, Serializable key) {
+        Object obj;
+        try {
+            obj = session.load(clazz, key);
+        } catch (Exception e) {
+            obj = null;
+        }
+        return obj;
+    }
 
     public Object get(Class clazz, Serializable key) {
         return session.get(clazz, key);
