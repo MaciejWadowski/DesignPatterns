@@ -15,7 +15,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-//@DataJpaTest
 class RoleTests {
 
     private SafetyModuleFacade facade;
@@ -62,8 +61,6 @@ class RoleTests {
         assertTrue(roleWithPermissionsPrimary.getRoleName().equals("dziedziczona"));
         assertEquals("dziedzicząca", roleWithPermissions.getRoleName());
         assertEquals(roleWithPermissions.getInheritedRoleId(), roleWithPermissionsPrimary.getRole().getId());
-        //assertOtherThings?
-        roleRepository.findAll();
     }
 
 }
