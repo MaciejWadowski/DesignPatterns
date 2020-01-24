@@ -22,7 +22,7 @@ public class UpdateQueryStrategyTest {
 
     @Test
     public void buildQueryTest(){
-        String query ="update Student set FIRSTNAME=?, LASTNAME=? where id=? and Student.id IN (1,2)";
+        String query ="update Student set FIRSTNAME=?, LASTNAME=? where id=?";
         UpdateQueryStrategy updateQueryStrategy = new UpdateQueryStrategy();
         Permission permission = new Permission("Student", PermissionsProvider.UPDATE, (long)1,(long)1);
         Permission permission2 = new Permission("Student",PermissionsProvider.UPDATE, (long)2,(long)1);
@@ -30,6 +30,15 @@ public class UpdateQueryStrategyTest {
         permissions.add(permission);
         permissions.add(permission2);
         String returnQuery = updateQueryStrategy.buildQuery(query, permissions);
-        Assert.assertThat(returnQuery, containsStringIgnoringCase("update Student set FIRSTNAME=?, LASTNAME=? where id=? and Student.id IN (1,2)"));
+        Assert.assertThat(returnQuery, containsStringIgnoringCase("update Student set FIRSTNAME=?, LASTNAME=? where id=? and Student.id IN (1, 2)"));
+    }
+
+    @Test
+    public void buildQueryTest2(){
+        String query ="update Student set FIRSTNAME=?, LASTNAME=? where id=?";
+        UpdateQueryStrategy updateQueryStrategy = new UpdateQueryStrategy();
+        List<Permission> permissions = new ArrayList<>();
+        String returnQuery = updateQueryStrategy.buildQuery(query, permissions);
+        Assert.assertThat(returnQuery, containsStringIgnoringCase("update Student set FIRSTNAME=?, LASTNAME=? where id=? and Student.id == 0"));
     }
 }
