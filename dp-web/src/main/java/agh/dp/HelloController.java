@@ -5,7 +5,6 @@ import agh.dp.facade.DatabaseOperations;
 import agh.dp.facade.SafetyModuleFacade;
 import agh.dp.models.Permission;
 import agh.dp.models.Role;
-import agh.dp.models.RoleWithPermissions;
 import agh.dp.models.User;
 import agh.dp.providers.PermissionsProvider;
 import agh.dp.utils.HibernateUtil;
@@ -52,25 +51,33 @@ public class HelloController {
         Student student = null;
         Boolean updated = true;
         Long val = null;
+        String error = "";
         if (buttonClicked != null) {
-            if (buttonClicked.equals("addStudent")) {
-                val = db.save(new Student(Long.parseLong(id), name, lastName));
-                if (val != null) {
-                    updated = true;
-                }
-            } else if (buttonClicked.equals("removeStudent")) {
-                updated = db.delete(new Student(Long.parseLong(id), null, null), Student.class, Long.parseLong(id));
-            } else if (buttonClicked.equals("updateStudent")) {
-                Student student2 = (Student) db.load(Student.class, Long.parseLong(id));
-                if (student2 != null) {
-                    student2.setLastName(lastName);
-                    student2.setFirstName(name);
-                    updated =  db.update(student2);
-                } else updated = false;
-            } else if (buttonClicked.equals("showStudent")) {
-                student = (Student) db.get(Student.class, Long.parseLong(id));
-                if (student != null) {
-                    updated = true;
+            if ("".equals(id)){
+                updated = false;
+                error = "Id cannot be empty.";
+            }
+            else {
+                error = "";
+                if (buttonClicked.equals("addStudent")) {
+                    val = db.save(new Student(Long.parseLong(id), name, lastName));
+                    if (val != null) {
+                        updated = true;
+                    }
+                } else if (buttonClicked.equals("removeStudent")) {
+                    updated = db.delete(new Student(Long.parseLong(id), null, null), Student.class, Long.parseLong(id));
+                } else if (buttonClicked.equals("updateStudent")) {
+                    Student student2 = (Student) db.load(Student.class, Long.parseLong(id));
+                    if (student2 != null) {
+                        student2.setLastName(lastName);
+                        student2.setFirstName(name);
+                        updated = db.update(student2);
+                    } else updated = false;
+                } else if (buttonClicked.equals("showStudent")) {
+                    student = (Student) db.get(Student.class, Long.parseLong(id));
+                    if (student != null) {
+                        updated = true;
+                    }
                 }
             }
         }
@@ -78,6 +85,7 @@ public class HelloController {
         model.addObject("result", student);
         model.addObject("success", updated);
         model.addObject("save", val);
+        model.addObject("error",error);
         return model;
     }
 
