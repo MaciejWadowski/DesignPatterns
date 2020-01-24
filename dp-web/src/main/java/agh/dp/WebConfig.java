@@ -1,5 +1,8 @@
 package agh.dp;
 
+import agh.dp.facade.SafetyModuleFacade;
+import agh.dp.models.RoleWithPermissions;
+import agh.dp.providers.PermissionsProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,6 +18,7 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 public class WebConfig extends WebSecurityConfigurerAdapter {
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -49,7 +53,6 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
                         .password("password")
                         .roles("USER")
                         .build();
-
         return new InMemoryUserDetailsManager(user,user2);
     }
 }
