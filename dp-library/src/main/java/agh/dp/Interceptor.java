@@ -54,8 +54,8 @@ public class Interceptor extends EmptyInterceptor {
     @Override
     public String onPrepareStatement(String sql) {
         System.out.println(sql);
-        String restrictedSql = sql;
-        List<String> tableNames = new ArrayList<>();
+        String restrictedSql;
+        List<String> tableNames;
 
         QueryStrategy queryStrategy;
         int accessNeededForOperation = getAccessLevelOfOperation(sql);
@@ -72,6 +72,11 @@ public class Interceptor extends EmptyInterceptor {
             queryStrategy = new SelectQueryStrategy();
         }
         tableNames = queryStrategy.getTableNamesFromQuery(sql);
+
+        if (!executor.shouldQueryBeInjected(tableNames.get(0), accessNeededForOperation)){
+            return super.onPrepareStatement(sql);
+        }
+
         List<Permission> permissions = executor.getUserPermissions(getCurrentUsername(),
                 tableNames,
                 accessNeededForOperation);

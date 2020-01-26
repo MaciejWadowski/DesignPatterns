@@ -24,11 +24,13 @@ class RoleTests {
     PermissionRepository permissionRepository;
     @Mock
     RoleRepository roleRepository;
+    @Mock
+    QueryToInjectRepository queryToInjectRepository;
 
 
     @BeforeEach
     public void setUp(){
-        facade = new SafetyModuleFacade(userRepository,permissionRepository,roleRepository);
+        facade = new SafetyModuleFacade(userRepository,permissionRepository,roleRepository, queryToInjectRepository);
     }
 
     @Test

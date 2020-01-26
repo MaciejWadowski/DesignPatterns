@@ -1,13 +1,15 @@
 package agh.dp.facade;
 
 import agh.dp.database.PermissionRepository;
+import agh.dp.database.QueryToInjectRepository;
 import agh.dp.database.RoleRepository;
 import agh.dp.database.UserRepository;
-import agh.dp.models.Permission;
-import agh.dp.models.Role;
-import agh.dp.models.RoleWithPermissions;
-import agh.dp.models.User;
+import agh.dp.models.*;
+import agh.dp.providers.PermissionsProvider;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class SafetyModuleFacade {
@@ -17,37 +19,13 @@ public class SafetyModuleFacade {
     UserRepository userRepository;
     PermissionRepository permissionRepository;
     RoleRepository roleRepository;
+    QueryToInjectRepository queryToInjectRepository;
 
-    public SafetyModuleFacade(UserRepository userRepository, PermissionRepository permissionRepository, RoleRepository roleRepository) {
+    public SafetyModuleFacade(UserRepository userRepository, PermissionRepository permissionRepository, RoleRepository roleRepository, QueryToInjectRepository queryToInjectRepository) {
         this.userRepository = userRepository;
         this.permissionRepository = permissionRepository;
         this.roleRepository = roleRepository;
-    }
-
-    public void setPermissionRepository(PermissionRepository permissionRepository, UserRepository userRepository, RoleRepository roleRepository){
-        this.permissionRepository = permissionRepository;
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-    }
-
-    public void setRoleRepository(RoleRepository roleRepository){
-        this.roleRepository = roleRepository;
-    }
-
-    public void setUserRepository(UserRepository userRepository){
-        this.userRepository = userRepository;
-    }
-
-    public PermissionRepository getPermissionRepository(){
-        return  this.permissionRepository;
-    }
-
-    public RoleRepository getRoleRepository() {
-        return roleRepository;
-    }
-
-    public UserRepository getUserRepository() {
-        return userRepository;
+        this.queryToInjectRepository = queryToInjectRepository;
     }
 
     public void saveRoleWithPermissions(RoleWithPermissions roleWithPermissions){
@@ -70,5 +48,32 @@ public class SafetyModuleFacade {
             User user = new User(username, roleWithPermissions.getRole().getId());
             userRepository.save(user);
         }
+    }
+
+    public void setQueryToInject(String tableName, int ... permissionLevel){
+        if (queryToInjectRepository == null) return;
+        List<QueryToInject> queriesToInject = new ArrayList<>();
+        for (int level : permissionLevel) {
+            switch (level) {
+                case PermissionsProvider.DELETE:
+                    queriesToInject.add(new QueryToInject(PermissionsProvider.DELETE, PermissionsProvider.DELETE_NAME, tableName));
+                    break;
+                case PermissionsProvider.INSERT:
+                    queriesToInject.add(new QueryToInject(PermissionsProvider.INSERT, PermissionsProvider.INSERT_NAME, tableName));
+                    break;
+                case PermissionsProvider.READ:
+                    queriesToInject.add(new QueryToInject(PermissionsProvider.READ, PermissionsProvider.READ_NAME, tableName));
+                    break;
+                case PermissionsProvider.UPDATE:
+                    queriesToInject.add(new QueryToInject(PermissionsProvider.UPDATE, PermissionsProvider.UPDATE_NAME, tableName));
+                    break;
+            }
+        }
+        if (!queriesToInject.isEmpty()) {
+            for (QueryToInject query : queriesToInject){
+                queryToInjectRepository.save(query);
+            }
+        }
+
     }
 }

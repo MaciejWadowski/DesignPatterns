@@ -45,5 +45,7 @@ public class DataLoader implements CommandLineRunner {
 
         facade.assignUserToRole("user", roleWithPermissionsPrimary);
         facade.assignUserToRole("user2", roleWithPermissions);
+
+        facade.setQueryToInject("Student", PermissionsProvider.UPDATE, PermissionsProvider.READ);
     }
 }
