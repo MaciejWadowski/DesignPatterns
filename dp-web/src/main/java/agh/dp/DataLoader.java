@@ -16,9 +16,11 @@ import java.util.Optional;
 public class DataLoader implements CommandLineRunner {
 
     private final SafetyModuleFacade facade;
+    private final PrzedmiotRepository repository;
 
-    public DataLoader(SafetyModuleFacade facade) {
+    public DataLoader(SafetyModuleFacade facade, PrzedmiotRepository repository) {
         this.facade = facade;
+        this.repository = repository;
     }
 
     @Override
@@ -36,6 +38,8 @@ public class DataLoader implements CommandLineRunner {
                 .addPermissions("Student", PermissionsProvider.UPDATE, 2,3,4)
                 .addPermissions("Student", PermissionsProvider.INSERT, 1,2)
                 .addPermissions("Student", PermissionsProvider.DELETE, 2,3)
+                .addPermissions("Przedmiot", PermissionsProvider.READ, 1,2,3)
+                .addInsertPermissions("Przedmiot")
                 .setInheritedRole(roleWithPermissionsPrimary.getRole().getId())
                 .build();
         facade.saveRoleWithPermissions(roleWithPermissions);

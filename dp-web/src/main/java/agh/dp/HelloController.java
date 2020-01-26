@@ -33,7 +33,7 @@ public class HelloController {
     @GetMapping(value = {"hello", "/hello", "hello.html"})
     public String bugHandler() {
         Interceptor interceptor = new Interceptor(executor);
-        this.session = HibernateUtil.getSessionFactory("org.h2.Driver", "jdbc:h2:mem:testdb", "sa", "", Student.class)
+        this.session = HibernateUtil.getSessionFactory("org.h2.Driver", "jdbc:h2:mem:testdb", "sa", "", Student.class, Przedmiot.class)
                 .withOptions()
                 .interceptor(interceptor)
                 .openSession();
@@ -41,7 +41,7 @@ public class HelloController {
         return "hello";
     }
 
-    @PostMapping(value="/hello")
+    @PostMapping(value = "/hello")
     public ModelAndView onClickAction(HttpServletRequest request) {
         String buttonClicked = request.getParameter("button");
         String id = request.getParameter("id");
@@ -49,20 +49,20 @@ public class HelloController {
         String lastName = request.getParameter("lastName");
         System.out.println("id = " + id + ";name = " + name + ";lastName = " + lastName);
         Student student = null;
-        Boolean updated = false;
+        Boolean updated = true;
+        Przedmiot przedmiot = null;
         Long val = null;
         String error = "";
         if (buttonClicked != null) {
-            if ("".equals(id)){
+            if ("".equals(id)) {
                 updated = false;
                 error = "Id cannot be empty.";
-            }
-            else {
+            } else {
                 error = "";
                 if (buttonClicked.equals("addStudent")) {
                     val = db.save(new Student(Long.parseLong(id), name, lastName));
-                    if (val != null) {
-                        updated = true;
+                    if (val == null) {
+                        updated = false;
                     }
                 } else if (buttonClicked.equals("removeStudent")) {
                     updated = db.delete(new Student(Long.parseLong(id), null, null), Student.class, Long.parseLong(id));
@@ -75,29 +75,54 @@ public class HelloController {
                     } else updated = false;
                 } else if (buttonClicked.equals("showStudent")) {
                     student = (Student) db.get(Student.class, Long.parseLong(id));
-                    if (student != null) {
-                        updated = true;
+                    if (student == null) {
+                        updated = false;
+                    }
+                } else if (buttonClicked.equals("addPrzedmiot")) {
+                    val = db.save(new Przedmiot(Long.parseLong(id), name));
+                    if (val == null) {
+                        updated = false;
+                    }
+
+                } else if (buttonClicked.equals("removePrzedmiot")) {
+                    updated = db.delete(new Przedmiot(Long.parseLong(id), null), Przedmiot.class, Long.parseLong(id));
+                } else if (buttonClicked.equals("updatePrzedmiot")) {
+                    Przedmiot student2 = (Przedmiot) db.load(Przedmiot.class, Long.parseLong(id));
+                    if (student2 != null) {
+                        student2.setName(name);
+                        updated = db.update(student2);
+                    } else updated = false;
+                } else if (buttonClicked.equals("showPrzedmiot")) {
+                    przedmiot = (Przedmiot) db.get(Przedmiot.class, Long.parseLong(id));
+                    if (przedmiot == null) {
+                        updated = false;
                     }
                 }
             }
-        }
-        ModelAndView model = new ModelAndView("hello");
-        model.addObject("result", student);
-        model.addObject("success", updated);
-        model.addObject("save", val);
-        model.addObject("error",error);
-        return model;
-    }
+            }
+            ModelAndView model = new ModelAndView("hello");
+            if (przedmiot != null) {
 
-    private String getCurrentUsername(){
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username = null;
-
-        if (principal instanceof UserDetails) {
-            username = ((UserDetails)principal).getUsername();
-        } else {
-            username = principal.toString();
+                model.addObject("przedmiot", przedmiot);
+            }
+            if (student != null) {
+                model.addObject("result", student);
+            }
+            model.addObject("success", updated);
+            model.addObject("save", val);
+            model.addObject("error", error);
+            return model;
         }
-        return username;
+
+        private String getCurrentUsername () {
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String username = null;
+
+            if (principal instanceof UserDetails) {
+                username = ((UserDetails) principal).getUsername();
+            } else {
+                username = principal.toString();
+            }
+            return username;
+        }
     }
-}

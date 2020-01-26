@@ -17,10 +17,16 @@
     <button type="submit" name="button" th:value="removeStudent" th:text = "removeStudent"></button>
     <button type="submit" name="button" th:value="updateStudent" th:text = "updateStudent"></button>
     <button type="submit" name="button" th:value="showStudent" th:text = "showStudent"></button>
+    <button type="submit" name="button" th:value="addPrzedmiot" th:text = "addPrzedmiot"></button>
+    <button type="submit" name="button" th:value="removePrzedmiot" th:text = "removePrzedmiot"></button>
+    <button type="submit" name="button" th:value="updatePrzedmiot" th:text = "updatePrzedmiot"></button>
+    <button type="submit" name="button" th:value="showPrzedmiot" th:text = "showPrzedmiot"></button>
 </form>
 <th>Operation result:</th>
 <div th:if="${success != null}" th:text="${success}"></div>
 <div th:if="${result != null}" th:text="${result.toString()}">Result displayed here</div>
+<div th:if="${przedmiot != null}" th:text="${przedmiot.toString()}">Result displayed here</div>
+
 <div th:if="${save != null}" th:text="${save.toString()}"></div>
 <div th:if="${error != null}" th:text="${error.toString()}"></div>
 </body>
