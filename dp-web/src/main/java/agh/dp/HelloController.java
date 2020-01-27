@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Controller
 public class HelloController {
@@ -31,14 +32,20 @@ public class HelloController {
     }
 
     @GetMapping(value = {"hello", "/hello", "hello.html"})
-    public String bugHandler() {
+    public ModelAndView bugHandler() {
         Interceptor interceptor = new Interceptor(executor);
         this.session = HibernateUtil.getSessionFactory("org.h2.Driver", "jdbc:h2:mem:testdb", "sa", "", Student.class, Przedmiot.class)
                 .withOptions()
                 .interceptor(interceptor)
                 .openSession();
         db = new DatabaseOperations(session);
-        return "hello";
+
+        List<Student> students = (List<Student>) (List) db.fetchAll(Student.class);
+        List<Przedmiot> przedmioty = (List<Przedmiot>) (List) db.fetchAll(Przedmiot.class);
+        ModelAndView model = new ModelAndView("hello");
+        model.addObject("students", students);
+        model.addObject("przedmioty", przedmioty);
+        return model;
     }
 
     @PostMapping(value = "/hello")

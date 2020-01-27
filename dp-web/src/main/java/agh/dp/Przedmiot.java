@@ -12,6 +12,9 @@ public class Przedmiot {
     @Column(name = "NAME")
     private String name;
 
+    public Przedmiot() {
+    }
+
     public Przedmiot(Long id, String name) {
         this.id = id;
         this.name = name;

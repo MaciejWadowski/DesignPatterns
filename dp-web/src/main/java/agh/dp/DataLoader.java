@@ -16,11 +16,13 @@ import java.util.Optional;
 public class DataLoader implements CommandLineRunner {
 
     private final SafetyModuleFacade facade;
-    private final PrzedmiotRepository repository;
+    private final PrzedmiotRepository przedmiotRepository;
+    private final StudentRepository studentRepository;
 
-    public DataLoader(SafetyModuleFacade facade, PrzedmiotRepository repository) {
+    public DataLoader(SafetyModuleFacade facade, PrzedmiotRepository przedmiotRepository, StudentRepository studentRepository) {
         this.facade = facade;
-        this.repository = repository;
+        this.przedmiotRepository = przedmiotRepository;
+        this.studentRepository = studentRepository;
     }
 
     @Override
@@ -47,5 +49,17 @@ public class DataLoader implements CommandLineRunner {
         facade.assignUserToRole("user2", roleWithPermissions);
 
         facade.setQueryToInject("Student", PermissionsProvider.UPDATE, PermissionsProvider.READ);
+
+        przedmiotRepository.save(new Przedmiot("przedmiot1"));
+        przedmiotRepository.save(new Przedmiot("przedmiot2"));
+        przedmiotRepository.save(new Przedmiot("przedmiot3"));
+        przedmiotRepository.save(new Przedmiot("przedmiot4"));
+        przedmiotRepository.save(new Przedmiot("przedmiot5"));
+
+        studentRepository.save(new Student("some1", "dude1"));
+        studentRepository.save(new Student("some2", "dude2"));
+        studentRepository.save(new Student("some3", "dude3"));
+        studentRepository.save(new Student("some4", "dude4"));
+        studentRepository.save(new Student("some5", "dude5"));
     }
 }

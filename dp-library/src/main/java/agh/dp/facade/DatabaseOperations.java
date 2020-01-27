@@ -1,10 +1,12 @@
 package agh.dp.facade;
 
+import agh.dp.utils.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.resource.transaction.spi.TransactionStatus;
 
 import javax.transaction.TransactionScoped;
 import java.io.Serializable;
+import java.util.List;
 
 public class DatabaseOperations {
 
@@ -56,7 +58,6 @@ public class DatabaseOperations {
         Object obj;
         try {
             obj = session.load(clazz, key);
-            obj.toString();
         } catch (Exception e) {
             obj = null;
         }
@@ -67,4 +68,7 @@ public class DatabaseOperations {
         return session.get(clazz, key);
     }
 
+    public List<Object> fetchAll(Class clazz) {
+        return HibernateUtil.loadAllData(clazz, session);
+    }
 }

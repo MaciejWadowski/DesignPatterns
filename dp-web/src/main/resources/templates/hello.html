@@ -26,8 +26,48 @@
 <div th:if="${success != null}" th:text="${success}"></div>
 <div th:if="${result != null}" th:text="${result.toString()}">Result displayed here</div>
 <div th:if="${przedmiot != null}" th:text="${przedmiot.toString()}">Result displayed here</div>
-
 <div th:if="${save != null}" th:text="${save.toString()}"></div>
 <div th:if="${error != null}" th:text="${error.toString()}"></div>
+<h3>Student List</h3>
+<table>
+    <thead>
+    <tr>
+        <th> ID </th>
+        <th> Name </th>
+        <th> Last Name</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${students != null}">
+        <td colspan="3"> Brak studenciaków z jacuzzi </td>
+    </tr>
+    <tr th:each="student : ${students}">
+        <td><span th:text="${student.id}"> Id </span></td>
+        <td><span th:text="${student.firstName}"> Name </span></td>
+        <td><span th:text="${student.lastName}"> LastName </span></td>
+    </tr>
+    </tbody>
+</table>
+
+<h3>Przedmioty List</h3>
+<table>
+    <thead>
+    <tr>
+        <th> ID </th>
+        <th> Name </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${przedmioty != null}">
+        <td colspan="2"> Brak przedmiotów </td>
+    </tr>
+    <tr th:each="przedmiot : ${przedmioty}">
+        <td><span th:text="${przedmiot.id}"> Id </span></td>
+        <td><span th:text="${przedmiot.name}"> Name </span></td>
+    </tr>
+    </tbody>
+</table>
+
+<h4></h4>
 </body>
 </html>
