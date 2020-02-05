@@ -35,7 +35,7 @@ public abstract class QueryJoinedOperations implements QueryStrategy{
         for (String tableName : tableNames) {
             perms = permissions.getOrDefault(tableName, null);
             if (perms == null) {
-                builder.append(tableName).append(".ID == 0 AND ");
+                builder.append(tableName).append(".ID = 0 AND ");
                 continue;
             }
             builder.append(tableName).append(".ID IN (");
