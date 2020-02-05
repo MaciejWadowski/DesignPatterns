@@ -2,9 +2,11 @@ package agh.dp.facade;
 
 import agh.dp.utils.HibernateUtil;
 import org.hibernate.Session;
+import org.hibernate.StaleObjectStateException;
 import org.hibernate.resource.transaction.spi.TransactionStatus;
 
 import javax.transaction.TransactionScoped;
+import javax.transaction.TransactionalException;
 import java.io.Serializable;
 import java.util.List;
 

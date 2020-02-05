@@ -47,8 +47,13 @@ public class RestController {
         new Random().nextBytes(array);
         String generatedString = new String(array, Charset.forName("UTF-8"));
         Student student = new Student(id, generatedString, generatedString);
+        student.setId(id);
         updateSession();
-        db.update(student);
+        try {
+            db.update(student);
+        } catch (Exception e) {
+
+        }
     }
 
     @PostMapping("/createStudent")
