@@ -117,6 +117,10 @@ public class HelloController {
             if (student != null) {
                 model.addObject("result", student);
             }
+            List<Student> students = (List<Student>) (List) db.fetchAll(Student.class);
+            List<Przedmiot> przedmioty = (List<Przedmiot>) (List) db.fetchAll(Przedmiot.class);
+            model.addObject("students", students);
+            model.addObject("przedmioty", przedmioty);
             model.addObject("success", updated);
             model.addObject("save", val);
             model.addObject("error", error);
