@@ -38,7 +38,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:if="${students != null}">
+    <tr th:if="${students == null}">
         <td colspan="3"> Brak studenciaków z jacuzzi </td>
     </tr>
     <tr th:each="student : ${students}">
@@ -58,7 +58,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:if="${przedmioty != null}">
+    <tr th:if="${przedmioty == null}">
         <td colspan="2"> Brak przedmiotów </td>
     </tr>
     <tr th:each="przedmiot : ${przedmioty}">

@@ -8,10 +8,12 @@ import agh.dp.models.Role;
 import agh.dp.models.User;
 import agh.dp.providers.PermissionsProvider;
 import agh.dp.utils.HibernateUtil;
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.hibernate.Session;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -132,4 +134,5 @@ public class HelloController {
             }
             return username;
         }
+
     }
