@@ -117,7 +117,7 @@ public class SelectQueryStrategy implements  QueryStrategy{
         for (String[] tableName : tableNames) {
             perms = permissions.getOrDefault(tableName[0], null);
             if (perms == null) {
-                builder.append(tableName[1]).append(".ID == 0 AND ");
+                builder.append(tableName[1]).append(".ID = 0 AND ");
                 continue;
             }
             builder.append(tableName[1]).append(".ID IN (");

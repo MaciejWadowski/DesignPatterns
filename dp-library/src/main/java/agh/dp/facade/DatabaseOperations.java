@@ -4,6 +4,7 @@ import agh.dp.utils.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.resource.transaction.spi.TransactionStatus;
 
+import javax.persistence.OptimisticLockException;
 import javax.transaction.TransactionScoped;
 import java.io.Serializable;
 import java.util.List;
@@ -38,7 +39,7 @@ public class DatabaseOperations {
             }
             session.delete(o);
             tr.commit();
-        } catch (Exception e) {
+        } catch (OptimisticLockException e) {
             flag = false;
         }
         return flag;
@@ -51,7 +52,7 @@ public class DatabaseOperations {
             org.hibernate.Transaction tr = session.beginTransaction();
             session.update(object);
             tr.commit();
-        } catch (Exception e) {
+        } catch (OptimisticLockException e) {
             flag = false;
         }
         return flag;
@@ -68,7 +69,6 @@ public class DatabaseOperations {
     }
 
     public Object get(Class clazz, Serializable key) {
-        //session.flush();
         session.clear();
         return session.get(clazz, key);
     }
