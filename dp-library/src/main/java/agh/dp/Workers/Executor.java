@@ -5,7 +5,10 @@ import agh.dp.models.Permission;
 import agh.dp.models.QueryToInject;
 import agh.dp.models.Role;
 import agh.dp.models.User;
+import agh.dp.utils.HibernateUtil;
+import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +32,6 @@ public class Executor {
         List<Long> userRoleIds = userRoleIds(userName);
 
         PermissionServiceMap permissionServiceMap = new PermissionServiceMap(permissionRepository);
-
         List<Permission> usersPermissions = new ArrayList<>();
         for (String tableName : tableNames) {
             usersPermissions.addAll(permissionServiceMap.findAllByRoleIdsAndTableNameAndAccessLevel(userRoleIds, tableName, accessLevel));

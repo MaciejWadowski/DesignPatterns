@@ -9,6 +9,7 @@ import agh.dp.models.User;
 import agh.dp.providers.PermissionsProvider;
 import agh.dp.utils.HibernateUtil;
 import com.sun.org.apache.xpath.internal.operations.Mod;
+import org.hibernate.FlushMode;
 import org.hibernate.Session;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;

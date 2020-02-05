@@ -56,7 +56,6 @@ public class Interceptor extends EmptyInterceptor {
         System.out.println(sql);
         String restrictedSql;
         List<String> tableNames;
-
         QueryStrategy queryStrategy;
         int accessNeededForOperation = getAccessLevelOfOperation(sql);
         if (accessNeededForOperation == PermissionsProvider.INSERT){
@@ -76,7 +75,6 @@ public class Interceptor extends EmptyInterceptor {
         if (!executor.shouldQueryBeInjected(tableNames.get(0), accessNeededForOperation)){
             return super.onPrepareStatement(sql);
         }
-
         List<Permission> permissions = executor.getUserPermissions(getCurrentUsername(),
                 tableNames,
                 accessNeededForOperation);

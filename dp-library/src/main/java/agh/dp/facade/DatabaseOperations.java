@@ -18,6 +18,7 @@ public class DatabaseOperations {
     }
 
     public Long save(Object object) {
+        session.clear();
         org.hibernate.Transaction tr = session.beginTransaction();
         Long addedRecordId = (Long) session.save(object);
         tr.commit();
@@ -27,6 +28,7 @@ public class DatabaseOperations {
 
     public Boolean delete(Object object, Class clazz, Serializable key) {
         Boolean flag = true;
+        session.clear();
         try {
             org.hibernate.Transaction tr = session.beginTransaction();
             Object o = session.get(clazz, key);
@@ -44,6 +46,7 @@ public class DatabaseOperations {
 
     public Boolean update(Object object) {
         Boolean flag = true;
+        session.clear();
         try {
             org.hibernate.Transaction tr = session.beginTransaction();
             session.update(object);
@@ -65,6 +68,8 @@ public class DatabaseOperations {
     }
 
     public Object get(Class clazz, Serializable key) {
+        //session.flush();
+        session.clear();
         return session.get(clazz, key);
     }
 

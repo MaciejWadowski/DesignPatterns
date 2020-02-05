@@ -48,7 +48,8 @@ public class DataLoader implements CommandLineRunner {
         facade.assignUserToRole("user", roleWithPermissionsPrimary);
         facade.assignUserToRole("user2", roleWithPermissions);
 
-        facade.setQueryToInject("Student", PermissionsProvider.UPDATE, PermissionsProvider.READ);
+        facade.setQueryToInject("Student", PermissionsProvider.UPDATE, PermissionsProvider.READ, PermissionsProvider.DELETE, PermissionsProvider.INSERT);
+        facade.setQueryToInject("Przedmiot", PermissionsProvider.READ, PermissionsProvider.DELETE, PermissionsProvider.INSERT);
 
         przedmiotRepository.save(new Przedmiot("przedmiot1"));
         przedmiotRepository.save(new Przedmiot("przedmiot2"));
